@@ -442,6 +442,25 @@
       <div id="leaderboardContent"></div>
     </div>
   </div>
+  <div class="page" id="page-resources">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-title lang-text-en">Revision Materials</div>
+          <div class="section-title lang-text-hi hi">रिवीजन सामग्री</div>
+          <div class="section-sub lang-text-en">Download PDFs and notes</div>
+          <div class="section-sub lang-text-hi hi">पीडीएफ और नोट्स डाउनलोड करें</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px">
+        <button class="btn btn-primary btn-sm" onclick="filterResources('All')">All</button>
+        <button class="btn btn-outline btn-sm" onclick="filterResources('UPSC')">UPSC</button>
+        <button class="btn btn-outline btn-sm" onclick="filterResources('MPPSC')">MPPSC</button>
+        <button class="btn btn-outline btn-sm" onclick="filterResources('SSC')">SSC</button>
+      </div>
+      <div class="quiz-list" id="studentResourceList"></div>
+    </div>
+  </div>
 
   <div class="page" id="page-profile">
     <div class="container">
@@ -466,6 +485,7 @@
         </button>
       </div>
       <div class="admin-nav">
+        <button class="admin-nav-btn" onclick="adminTab('resources')">Resources</button>
         <button class="admin-nav-btn active" onclick="adminTab('overview')">Overview</button>
         <button class="admin-nav-btn" onclick="adminTab('quizzes')">Quizzes</button>
         <button class="admin-nav-btn" onclick="adminTab('responses')">Responses</button>
@@ -479,6 +499,22 @@
       <div class="admin-section" id="admin-quizzes"><div id="adminQuizList"></div></div>
       <div class="admin-section" id="admin-responses"><div id="adminResponses"></div></div>
       <div class="admin-section" id="admin-students"><div id="adminStudents"></div></div>
+            <div class="admin-section" id="admin-resources">
+        <div class="card" style="margin-bottom:24px">
+          <div class="card-body">
+            <h3 style="margin-bottom:16px;font-family:var(--font-display)">Upload New Material</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <input class="form-control" id="resTitle" placeholder="Title (e.g. History Notes)"/>
+              <select class="form-control" id="resCat"><option>UPSC</option><option>MPPSC</option><option>SSC</option></select>
+              <input class="form-control" type="file" id="resFile" accept=".pdf, application/pdf, image/*" style="grid-column:1/-1"/>
+
+              <button class="btn btn-primary" style="grid-column:1/-1" onclick="uploadAdminResource()">Upload Resource</button>
+            </div>
+          </div>
+        </div>
+        <div id="adminResourceList"></div>
+      </div>
+
     </div>
   </div>
 
@@ -789,11 +825,14 @@ function setupBottomNav(role) {
       <button class="bnav-btn active" id="bn-admin" onclick="showPage('admin');renderAdminPage()">${svgGrid} Dashboard</button>
       <button class="bnav-btn" id="bn-lb" onclick="showPage('leaderboard');renderLeaderboard()">${svgAward} Ranks</button>`;
   } else {
+    const svgBook = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`;
     el.innerHTML = `
       <button class="bnav-btn active" id="bn-home" onclick="showPage('student');renderStudentHome()">${svgHome} Home</button>
+      <button class="bnav-btn" id="bn-resources" onclick="showPage('resources');renderResources()">${svgBook} Revision</button>
       <button class="bnav-btn" id="bn-lb" onclick="showPage('leaderboard');renderLeaderboard()">${svgAward} Ranks</button>
       <button class="bnav-btn" id="bn-profile" onclick="showPage('profile');renderProfile()">${svgUser} Profile</button>`;
   }
+
 }
 
 function updateUserChip() {
@@ -1259,7 +1298,8 @@ async function renderAdminPage() { await adminTab(state.adminTab || 'overview');
 
 async function adminTab(tab) {
   state.adminTab = tab;
-  const tabs = ['overview','quizzes','responses','students'];
+  // Change 1: 'resources' is added to this array
+  const tabs = ['overview','quizzes','responses','students', 'resources']; 
   document.querySelectorAll('.admin-nav-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===tab));
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.getElementById('admin-'+tab).classList.add('active');
@@ -1267,7 +1307,10 @@ async function adminTab(tab) {
   else if (tab==='quizzes')   await renderAdminQuizzes();
   else if (tab==='responses') await renderAdminResponses();
   else if (tab==='students')  await renderAdminStudents();
+  // Change 2: The new line telling it what to load when the Resources tab is clicked
+  else if (tab==='resources') await renderAdminResources(); 
 }
+
 
 async function renderAdminOverview() {
   showLoader('Loading overview…');
@@ -1605,6 +1648,122 @@ function downloadResultPDF(fileName) {
     hideLoader();
     toast(t('Failed to generate PDF', 'पीडीएफ जनरेट विफल'), 'error');
   });
+}
+// ════════════════════════════════════════════════════════════
+//  REVISION RESOURCES (PDF/IMAGES)
+// ════════════════════════════════════════════════════════════
+let allResources = [];
+
+async function fetchResources() {
+  const { data, error } = await sb.from('resources').select('*').order('created_at', { ascending: false });
+  if (!error) allResources = data || [];
+}
+
+async function renderResources(category = 'All') {
+  showLoader(t('Loading resources...', 'सामग्री लोड हो रही है...'));
+  await fetchResources();
+  hideLoader();
+  
+  const list = category === 'All' ? allResources : allResources.filter(r => r.category === category);
+  const container = document.getElementById('studentResourceList');
+  
+  if (!list.length) {
+    container.innerHTML = `<div class="empty-state"><h3>${t('No resources yet','अभी कोई सामग्री नहीं')}</h3></div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(r => `
+    <div class="quiz-item fade-in" onclick="window.open('${r.file_url}', '_blank')">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="width:40px;height:40px;background:var(--accent-light);color:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">
+          ${r.file_type.includes('pdf') ? '📄' : '🖼️'}
+        </div>
+        <div>
+          <div class="quiz-item-title">${r.title}</div>
+          <div class="quiz-item-meta">
+            <span class="cat-chip cat-${r.category.toLowerCase()}">${r.category}</span>
+            <span class="meta-sep">·</span>
+            <span class="meta-tag">${new Date(r.created_at).toLocaleDateString()}</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm">View</button>
+    </div>
+  `).join('');
+}
+
+function filterResources(cat) { renderResources(cat); }
+
+// Admin Upload Logic
+async function uploadAdminResource() {
+  const title = document.getElementById('resTitle').value.trim();
+  const cat = document.getElementById('resCat').value;
+  const fileInput = document.getElementById('resFile');
+  
+  if (!title || !fileInput.files.length) { toast('Please provide a title and file', 'error'); return; }
+  
+  const file = fileInput.files[0];
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+  showLoader('Uploading file...');
+  
+  // 1. Upload to Storage Bucket
+  const { data: uploadData, error: uploadError } = await sb.storage
+    .from('revision_materials')
+    .upload(fileName, file);
+    
+  if (uploadError) { hideLoader(); toast('File upload failed', 'error'); console.error(uploadError); return; }
+
+  // 2. Get Public URL
+  const { data: { publicUrl } } = sb.storage.from('revision_materials').getPublicUrl(fileName);
+
+  // 3. Save to Database
+  const resourceData = {
+    id: 'res_' + Date.now(),
+    title: title,
+    category: cat,
+    file_url: publicUrl,
+    file_type: file.type,
+    created_at: new Date().toISOString()
+  };
+
+  const { error: dbError } = await sb.from('resources').insert([resourceData]);
+  
+  hideLoader();
+  if (dbError) { toast('Database save failed', 'error'); console.error(dbError); return; }
+
+  toast('Resource uploaded successfully!', 'success');
+  document.getElementById('resTitle').value = '';
+  fileInput.value = '';
+  await fetchResources();
+  renderAdminResources();
+}
+
+async function renderAdminResources() {
+  await fetchResources();
+  const container = document.getElementById('adminResourceList');
+  container.innerHTML = allResources.map(r => `
+    <div class="quiz-item" style="margin-bottom:10px">
+      <div class="quiz-item-info">
+        <div class="quiz-item-title">${r.title} <span class="badge badge-gray" style="font-size:10px">${r.file_type}</span></div>
+        <div class="quiz-item-meta"><span class="cat-chip cat-${r.category.toLowerCase()}">${r.category}</span></div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deleteResource('${r.id}', '${r.file_url}')">Delete</button>
+    </div>
+  `).join('');
+}
+
+async function deleteResource(id, url) {
+  if(!confirm('Delete this resource?')) return;
+  showLoader('Deleting...');
+  // Extract filename from URL to delete from bucket
+  const fileName = url.split('/').pop();
+  await sb.storage.from('revision_materials').remove([fileName]);
+  await sb.from('resources').delete().eq('id', id);
+  hideLoader();
+  toast('Deleted successfully', 'success');
+  renderAdminResources();
 }
 
 // ════════════════════════════════════════════════════════════
