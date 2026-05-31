@@ -295,6 +295,85 @@
     .lang-btn { padding: 5px 10px; }
     .modal { border-radius: 20px 20px 0 0; }
   }
+
+  /* ── AI Quiz Generator ── */
+  .ai-upload-zone {
+    border: 2px dashed var(--border-dark);
+    border-radius: var(--radius);
+    padding: 40px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    background: var(--bg);
+    position: relative;
+  }
+  .ai-upload-zone:hover, .ai-upload-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+  .ai-upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .ai-upload-icon { font-size: 40px; margin-bottom: 12px; display: block; }
+  .ai-upload-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .ai-upload-sub { font-size: 13px; color: var(--text-muted); }
+  .ai-preview-strip {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--accent-light); border: 1px solid var(--accent);
+    border-radius: var(--radius-sm); padding: 14px 18px; margin-top: 16px;
+  }
+  .ai-preview-thumb {
+    width: 52px; height: 52px; border-radius: 8px; object-fit: cover;
+    border: 1px solid var(--border); background: var(--surface); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+  }
+  .ai-preview-name { font-weight: 600; font-size: 14px; color: var(--text); }
+  .ai-preview-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .ai-settings-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .ai-settings-row .form-group { margin-bottom: 0; }
+  .ai-gen-btn {
+    width: 100%; padding: 16px; border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, #113f2b, #1e7f4e);
+    color: #fff; font-size: 15px; font-weight: 700;
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: all .2s; box-shadow: 0 4px 16px rgba(17,63,43,.2);
+  }
+  .ai-gen-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(17,63,43,.3); }
+  .ai-gen-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .ai-step-indicator {
+    display: flex; align-items: center; gap: 0; margin-bottom: 24px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 99px; padding: 4px;
+  }
+  .ai-step {
+    flex: 1; text-align: center; font-size: 12px; font-weight: 600; padding: 8px 4px;
+    color: var(--text-muted); border-radius: 99px; transition: all .2s;
+  }
+  .ai-step.active { background: var(--accent); color: #fff; }
+  .ai-step.done { color: var(--accent); }
+  .ai-review-q {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 16px 18px; margin-bottom: 12px; position: relative;
+  }
+  .ai-review-q-text { font-weight: 600; font-size: 14px; margin-bottom: 8px; line-height: 1.5; }
+  .ai-review-q-text-hi { font-family: var(--font-hindi); font-size: 13px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.6; }
+  .ai-review-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .ai-review-opt {
+    font-size: 13px; padding: 6px 10px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--bg);
+  }
+  .ai-review-opt.correct { border-color: #27ae60; background: #eaf7ef; color: #27ae60; font-weight: 600; }
+  .ai-review-opt-hi { font-family: var(--font-hindi); font-size: 12px; color: var(--text-muted); }
+  .ai-review-expl { margin-top: 10px; font-size: 12px; color: var(--text-muted); padding: 8px 12px; background: var(--bg); border-radius: 6px; border-left: 3px solid var(--accent); line-height: 1.6; }
+  .ai-remove-q { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--text-light); font-size: 16px; cursor: pointer; padding: 4px; border-radius: 4px; }
+  .ai-remove-q:hover { color: var(--red); background: var(--red-light); }
+  .ai-api-key-row { background: var(--gold-light); border: 1px solid var(--gold); border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: var(--gold); display: flex; align-items: center; gap: 12px; }
+  .ai-api-key-row input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 7px 12px; font-size: 13px; font-family: monospace; outline: none; }
+  .ai-api-key-row input:focus { border-color: var(--accent); }
+  @media (max-width: 600px) {
+    .ai-settings-row { grid-template-columns: 1fr 1fr; }
+    .ai-review-opts { grid-template-columns: 1fr; }
+  }
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -485,6 +564,7 @@
         </button>
       </div>
       <div class="admin-nav">
+        <button class="admin-nav-btn" onclick="adminTab('aigen')">✨ AI Generate</button>
         <button class="admin-nav-btn" onclick="adminTab('resources')">Resources</button>
         <button class="admin-nav-btn active" onclick="adminTab('overview')">Overview</button>
         <button class="admin-nav-btn" onclick="adminTab('quizzes')">Quizzes</button>
@@ -513,6 +593,129 @@
           </div>
         </div>
         <div id="adminResourceList"></div>
+      </div>
+
+      <!-- ── AI Quiz Generator Section ── -->
+      <div class="admin-section" id="admin-aigen">
+
+        <!-- API Key row -->
+        <div class="ai-api-key-row" id="aiApiKeyRow">
+          <span>🔑</span>
+          <div style="flex:1">
+            <div style="font-weight:700;margin-bottom:4px">🆓 Google Gemini API Key — <span style="color:#27ae60">FREE, No Credit Card</span></div>
+            <div style="font-size:11px;opacity:.8">Free forever · Get yours at aistudio.google.com · Stored in session only, never sent to server</div>
+          </div>
+          <input type="password" id="aiApiKey" value="" placeholder="AIza... (key pre-loaded)" autocomplete="off"/>
+          <button class="btn btn-sm" style="background:var(--gold);color:#fff;white-space:nowrap" onclick="saveApiKey()">Save Key</button>
+        </div>
+
+        <!-- Step indicator -->
+        <div class="ai-step-indicator">
+          <div class="ai-step active" id="aiStep1">① Upload</div>
+          <div class="ai-step" id="aiStep2">② Configure</div>
+          <div class="ai-step" id="aiStep3">③ Generate</div>
+          <div class="ai-step" id="aiStep4">④ Review &amp; Publish</div>
+        </div>
+
+        <!-- Upload card -->
+        <div class="card" style="margin-bottom:20px" id="aiUploadCard">
+          <div class="card-body">
+            <div style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:6px;color:var(--accent)">Upload Reference Material</div>
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px">Upload a PDF or image (JPG/PNG) — Google Gemini AI will read it and auto-generate bilingual MCQs (100% Free)</div>
+
+            <div class="ai-upload-zone" id="aiDropZone">
+              <input type="file" id="aiFileInput" accept=".pdf,application/pdf,image/jpeg,image/jpg,image/png,image/webp" onchange="handleAiFileSelect(this)"/>
+              <span class="ai-upload-icon">📂</span>
+              <div class="ai-upload-title">Drop PDF or Image here</div>
+              <div class="ai-upload-sub">Supports PDF, JPG, PNG, WEBP · Max 20MB</div>
+            </div>
+
+            <div id="aiFilePreview" class="hidden"></div>
+
+            <div class="ai-settings-row" id="aiSettingsRow" style="display:none">
+              <div class="form-group">
+                <label class="form-label">No. of Questions</label>
+                <select class="form-control" id="aiNumQ">
+                  <option value="5">5 Questions</option>
+                  <option value="10" selected>10 Questions</option>
+                  <option value="15">15 Questions</option>
+                  <option value="20">20 Questions</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-control" id="aiCategory">
+                  <option value="UPSC">UPSC</option>
+                  <option value="MPPSC">MPPSC</option>
+                  <option value="SSC">SSC</option>
+                  <option value="General">General</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Difficulty</label>
+                <select class="form-control" id="aiDifficulty">
+                  <option value="Easy">Easy</option>
+                  <option value="Medium" selected>Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="ai-gen-btn" id="aiGenBtn" style="display:none" onclick="generateQuizFromFile()">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Generate Quiz with AI
+            </button>
+          </div>
+        </div>
+
+        <!-- Generated questions review area -->
+        <div id="aiReviewArea" class="hidden">
+          <div class="section-header">
+            <div>
+              <div class="section-title" style="font-size:20px;color:var(--accent)">Review Generated Quiz</div>
+              <div class="section-sub" id="aiReviewSub">Edit questions before publishing</div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="resetAiGenerator()">↩ Start Over</button>
+          </div>
+
+          <!-- Quiz meta fields -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="form-group" style="grid-column:1/-1;margin-bottom:0">
+                  <label class="form-label">Quiz Title (English)</label>
+                  <input class="form-control" id="aiQuizTitle" placeholder="Auto-generated title"/>
+                </div>
+                <div class="form-group" style="grid-column:1/-1;margin-bottom:0">
+                  <label class="form-label" style="font-family:var(--font-hindi)">क्विज़ शीर्षक (हिंदी)</label>
+                  <input class="form-control hindi-input" id="aiQuizTitleHi" placeholder="हिंदी शीर्षक"/>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label">Time Limit (min)</label>
+                  <input class="form-control" type="number" id="aiQuizTime" value="15" min="1" max="120"/>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label">Category</label>
+                  <select class="form-control" id="aiQuizCat">
+                    <option value="UPSC">UPSC</option><option value="MPPSC">MPPSC</option>
+                    <option value="SSC">SSC</option><option value="General">General</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="aiGeneratedQuestions"></div>
+
+          <div style="display:flex;gap:12px;margin-top:20px;margin-bottom:40px">
+            <button class="btn btn-outline btn-full" onclick="resetAiGenerator()">Discard</button>
+            <button class="btn btn-primary btn-full btn-lg" onclick="publishAiQuiz()">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Publish Quiz
+            </button>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -770,28 +973,58 @@ function hideLoader() {
 }
 
 // ════════════════════════════════════════════════════════════
-//  BOOT 
+//  BOOT
 // ════════════════════════════════════════════════════════════
 (async () => {
-  showLoader('Loading…');
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    const profile = await DB.getProfile(session.user.id);
-    if (profile) {
-      state.user = profile;
-      await bootApp();
-    } else {
-      hideLoader();
-    }
-  } else {
-    hideLoader();
+  // ── Detect file:// protocol — Supabase fetch WILL fail ──
+  if (window.location.protocol === 'file:') {
+    document.body.innerHTML = `
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fcfbf9;font-family:'DM Sans',sans-serif;padding:24px">
+        <div style="max-width:440px;width:100%;text-align:center">
+          <div style="font-size:52px;margin-bottom:16px">🚫</div>
+          <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#1a1814;margin-bottom:12px">Cannot run from local file</h2>
+          <p style="color:#6b6560;font-size:15px;line-height:1.6;margin-bottom:24px">
+            This app uses Supabase which requires <strong>HTTPS</strong>. Opening it as a local <code>file://</code> blocks all network requests.
+          </p>
+          <div style="background:#edf5f0;border:1px solid #113f2b;border-radius:12px;padding:20px;text-align:left;margin-bottom:20px">
+            <div style="font-weight:700;color:#113f2b;margin-bottom:12px;font-size:14px">✅ How to deploy (free, 2 minutes):</div>
+            <div style="font-size:13px;color:#1a1814;display:flex;flex-direction:column;gap:10px;line-height:1.6">
+              <div><strong>Option 1 — Netlify Drop</strong><br/>Go to <a href="https://app.netlify.com/drop" target="_blank" style="color:#113f2b">app.netlify.com/drop</a> → drag &amp; drop this HTML file → get a live HTTPS link instantly</div>
+              <div><strong>Option 2 — GitHub Pages</strong><br/>Upload to a GitHub repo → Settings → Pages → Deploy</div>
+              <div><strong>Option 3 — Vercel</strong><br/><a href="https://vercel.com/new" target="_blank" style="color:#113f2b">vercel.com/new</a> → import repo → auto-deploys on every push</div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:#9e9890">Once deployed, open the HTTPS URL and everything will work.</p>
+        </div>
+      </div>`;
+    return;
   }
+
+  showLoader('Loading…');
+  try {
+    const { data: { session }, error: sessErr } = await sb.auth.getSession();
+    if (sessErr) throw sessErr;
+    if (session?.user) {
+      const profile = await DB.getProfile(session.user.id);
+      if (profile) { state.user = profile; await bootApp(); return; }
+    }
+  } catch(e) {
+    console.error('Boot error:', e.message);
+    // Show a friendly inline error instead of blank screen
+    toast('Connection error: ' + (e.message || 'Check internet and try refreshing'), 'error');
+  }
+  hideLoader();
+
   sb.auth.onAuthStateChange(async (event, session) => {
     if (event === 'SIGNED_OUT') {
       state.user = null;
       document.getElementById('topbar').style.display = 'none';
       document.getElementById('bottomNav').style.display = 'none';
       showPage('auth');
+    }
+    if (event === 'SIGNED_IN' && !state.user && session?.user) {
+      const profile = await DB.getProfile(session.user.id);
+      if (profile) { state.user = profile; await bootApp(); }
     }
   });
 })();
@@ -860,15 +1093,46 @@ async function doLogin() {
   if (!email || !password) { toast(t('Please fill all fields','सभी फ़ील्ड भरें'), 'error'); return; }
 
   showLoader(t('Signing in…','साइन इन हो रहा है…'));
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if (error) { hideLoader(); toast(t('Invalid email or password','गलत ईमेल या पासवर्ड'), 'error'); return; }
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      hideLoader();
+      // Distinguish wrong credentials from network errors
+      if (error.message?.toLowerCase().includes('fetch') || error.message?.toLowerCase().includes('network')) {
+        toast('Network error — check your internet connection', 'error');
+      } else if (error.message?.toLowerCase().includes('invalid') || error.status === 400) {
+        toast(t('Invalid email or password','गलत ईमेल या पासवर्ड'), 'error');
+      } else {
+        toast(error.message || 'Login failed', 'error');
+      }
+      return;
+    }
 
-  const profile = await DB.getProfile(data.user.id);
-  if (!profile) { hideLoader(); toast(t('Profile not found. Contact admin.','प्रोफ़ाइल नहीं मिली।'), 'error'); return; }
-
-  state.user = profile;
-  toast(t(`Welcome back, ${(profile.name||'').split(' ')[0]}!`, `स्वागत है, ${(profile.name||'').split(' ')[0]}!`), 'success');
-  await bootApp();
+    const profile = await DB.getProfile(data.user.id);
+    if (!profile) {
+      // Auto-create a minimal profile for admin accounts created via Supabase dashboard
+      const fallback = {
+        id: data.user.id, name: email.split('@')[0],
+        email, exam: 'General', role: 'student',
+        created_at: new Date().toISOString()
+      };
+      await sb.from('profiles').upsert([fallback], { onConflict: 'id' });
+      state.user = fallback;
+    } else {
+      state.user = profile;
+    }
+    hideLoader();
+    toast(t(`Welcome back, ${(state.user.name||'').split(' ')[0]}!`, `स्वागत है, ${(state.user.name||'').split(' ')[0]}!`), 'success');
+    await bootApp();
+  } catch(e) {
+    hideLoader();
+    console.error('doLogin error:', e);
+    if (e.message?.includes('fetch') || e.message?.includes('Failed')) {
+      toast('Cannot reach server — open this app from an HTTPS URL, not a local file', 'error');
+    } else {
+      toast('Login error: ' + (e.message || 'Unknown error'), 'error');
+    }
+  }
 }
 
 async function doRegister() {
@@ -1787,6 +2051,365 @@ document.addEventListener('keydown', e => {
     else doRegister();
   }
 });
+
+// ════════════════════════════════════════════════════════════
+//  AI QUIZ GENERATOR — Anthropic Claude API
+// ════════════════════════════════════════════════════════════
+
+// In-memory API key (never persisted to server)
+let _aiApiKey = sessionStorage.getItem('cp_ai_key') || 'AIzaSyAQ.Ab8RN6Lxu7DweJhwd0jsz-KKMrKD3p68yOIgNk0lE_KBHcI8ow';
+let _aiGeneratedData = null;  // holds parsed quiz from Claude
+let _aiSelectedFile  = null;  // the uploaded File object
+
+// Restore key display on page load
+document.addEventListener('DOMContentLoaded', () => {
+  if (_aiApiKey) document.getElementById('aiApiKey').value = _aiApiKey;
+});
+
+function saveApiKey() {
+  const k = document.getElementById('aiApiKey').value.trim();
+  if (!k || k.length < 10) { toast('Paste your Gemini API key (starts with AIza...)', 'error'); return; }
+  _aiApiKey = k;
+  sessionStorage.setItem('cp_ai_key', k);
+  toast('API key saved for this session ✓', 'success');
+}
+
+// ── Drag-and-drop helpers ────────────────────────────────
+const dropZone = document.getElementById('aiDropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('dragover');
+  const file = e.dataTransfer?.files?.[0];
+  if (file) applyAiFile(file);
+});
+
+function handleAiFileSelect(input) {
+  if (input.files?.[0]) applyAiFile(input.files[0]);
+}
+
+function applyAiFile(file) {
+  const allowed = ['application/pdf','image/jpeg','image/jpg','image/png','image/webp'];
+  if (!allowed.includes(file.type)) { toast('Only PDF, JPG, PNG, WEBP allowed', 'error'); return; }
+  if (file.size > 20 * 1024 * 1024) { toast('File too large — max 20MB', 'error'); return; }
+  _aiSelectedFile = file;
+
+  const isPdf = file.type === 'application/pdf';
+  const sizeStr = (file.size / 1024 < 1024)
+    ? (file.size / 1024).toFixed(0) + ' KB'
+    : (file.size / 1024 / 1024).toFixed(1) + ' MB';
+
+  document.getElementById('aiFilePreview').innerHTML = `
+    <div class="ai-preview-strip fade-in">
+      <div class="ai-preview-thumb">${isPdf ? '📄' : '🖼️'}</div>
+      <div>
+        <div class="ai-preview-name">${file.name}</div>
+        <div class="ai-preview-meta">${isPdf ? 'PDF Document' : 'Image'} · ${sizeStr}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="clearAiFile()" style="color:var(--red)">✕ Remove</button>
+    </div>`;
+  document.getElementById('aiFilePreview').classList.remove('hidden');
+  document.getElementById('aiSettingsRow').style.display = 'grid';
+  document.getElementById('aiGenBtn').style.display      = 'flex';
+  setAiStep(2);
+}
+
+function clearAiFile() {
+  _aiSelectedFile = null;
+  document.getElementById('aiFileInput').value = '';
+  document.getElementById('aiFilePreview').classList.add('hidden');
+  document.getElementById('aiSettingsRow').style.display = 'none';
+  document.getElementById('aiGenBtn').style.display      = 'none';
+  setAiStep(1);
+}
+
+function setAiStep(n) {
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById('aiStep'+i);
+    if (!el) return;
+    el.classList.toggle('active', i === n);
+    el.classList.toggle('done',   i < n);
+  });
+}
+
+function resetAiGenerator() {
+  clearAiFile();
+  _aiGeneratedData = null;
+  document.getElementById('aiReviewArea').classList.add('hidden');
+  document.getElementById('aiUploadCard').style.display = 'block';
+  setAiStep(1);
+}
+
+// ── Core: send file to Claude, get structured quiz JSON ──
+async function generateQuizFromFile() {
+  if (!_aiSelectedFile) { toast('Select a file first', 'error'); return; }
+
+  const key = _aiApiKey || document.getElementById('aiApiKey').value.trim();
+  if (!key || key.length < 10) {
+    toast('Enter your Google Gemini API key above — get it free at aistudio.google.com', 'error'); return;
+  }
+  _aiApiKey = key;
+  sessionStorage.setItem('cp_ai_key', key);
+
+  const numQ       = parseInt(document.getElementById('aiNumQ').value) || 10;
+  const category   = document.getElementById('aiCategory').value;
+  const difficulty = document.getElementById('aiDifficulty').value;
+
+  setAiStep(3);
+  const btn = document.getElementById('aiGenBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div style="width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></div> Gemini is reading your material…';
+  showLoader('Gemini AI is reading your material and generating ' + numQ + ' bilingual questions…');
+
+  try {
+    // ── Convert file to base64 ──────────────────────────
+    const base64 = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload  = () => res(reader.result.split(',')[1]);
+      reader.onerror = () => rej(new Error('File read failed'));
+      reader.readAsDataURL(_aiSelectedFile);
+    });
+
+    const mediaType = _aiSelectedFile.type;
+    const isPdf     = mediaType === 'application/pdf';
+
+    // ── Build the prompt ───────────────────────────────
+    const prompt = `You are an expert question-paper setter for Indian civil services competitive exams (UPSC, MPPSC, SSC).
+Generate ${numQ} ${difficulty}-level MCQ questions from the provided ${isPdf ? 'PDF document' : 'image'} for ${category} exam preparation.
+
+IMPORTANT: Respond with ONLY a valid JSON object — no markdown code fences, no explanation, no extra text before or after.
+
+Required JSON format:
+{
+  "title": "Quiz title in English (max 60 chars)",
+  "titleHi": "क्विज़ शीर्षक हिंदी में",
+  "desc": "1-2 sentence description in English",
+  "descHi": "हिंदी में संक्षिप्त विवरण",
+  "questions": [
+    {
+      "text": "Question in English?",
+      "textHi": "प्रश्न हिंदी में?",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "optionsHi": ["विकल्प A", "विकल्प B", "विकल्प C", "विकल्प D"],
+      "correct": 0,
+      "explanation": "Brief explanation in English (1-2 sentences).",
+      "explanationHi": "हिंदी में संक्षिप्त व्याख्या।"
+    }
+  ]
+}
+
+Rules:
+- "correct" is the 0-based index (0, 1, 2, or 3) of the correct answer in the options array
+- All 4 options must be factually distinct and plausible distractors
+- Questions must be directly based on content visible in the provided material
+- Generate exactly ${numQ} questions
+- For images: extract all visible text, diagrams, tables, and figures to form questions
+- Return ONLY the JSON. No markdown. No extra words.`;
+
+    // ── Build Gemini API request parts ─────────────────
+    // Gemini accepts inline_data for both images and PDFs (as application/pdf)
+    const inlineDataPart = {
+      inline_data: {
+        mime_type: mediaType,
+        data:      base64
+      }
+    };
+
+    const model = 'gemini-2.0-flash';   // Free tier, multimodal, fast
+
+    // ── Call Google Gemini API ─────────────────────────
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+      {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              inlineDataPart,
+              { text: prompt }
+            ]
+          }],
+          generationConfig: {
+            temperature:     0.4,
+            maxOutputTokens: 8192,
+            responseMimeType: 'application/json'   // forces clean JSON output
+          }
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}));
+      const msg = errBody?.error?.message || `HTTP ${response.status}`;
+      if (response.status === 400) throw new Error('Bad request — check file type/size. ' + msg);
+      if (response.status === 403) throw new Error('Invalid API key — get yours free at aistudio.google.com');
+      if (response.status === 429) throw new Error('Rate limit hit — wait 1 minute and try again (free tier: 15 req/min)');
+      throw new Error('Gemini API error: ' + msg);
+    }
+
+    const data    = await response.json();
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    if (!rawText) throw new Error('Empty response from Gemini. Try again.');
+
+    // ── Parse JSON robustly ────────────────────────────
+    let quizData;
+    try {
+      const cleaned = rawText.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/,'').trim();
+      quizData = JSON.parse(cleaned);
+    } catch(parseErr) {
+      // Attempt to extract JSON block from anywhere in the response
+      const match = rawText.match(/\{[\s\S]*\}/);
+      if (match) {
+        try { quizData = JSON.parse(match[0]); }
+        catch(e2) { throw new Error('Could not parse Gemini response as JSON. Try again.'); }
+      } else {
+        throw new Error('Gemini returned non-JSON. Try again or reduce question count.');
+      }
+    }
+
+    if (!Array.isArray(quizData.questions) || !quizData.questions.length) {
+      throw new Error('No questions found in response. Try again.');
+    }
+
+    _aiGeneratedData = quizData;
+    _aiGeneratedData.category = category;
+
+    hideLoader();
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Generate Quiz with AI';
+
+    renderAiReview();
+    setAiStep(4);
+    toast('✅ ' + quizData.questions.length + ' questions generated by Gemini!', 'success');
+
+  } catch(err) {
+    hideLoader();
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Retry Generate';
+    console.error('Gemini generation error:', err);
+    toast('Generation failed: ' + (err.message || 'Check API key and try again'), 'error');
+    setAiStep(2);
+  }
+}
+
+// ── Render the review panel ──────────────────────────────
+function renderAiReview() {
+  const d = _aiGeneratedData;
+  if (!d) return;
+
+  document.getElementById('aiUploadCard').style.display = 'none';
+  document.getElementById('aiReviewArea').classList.remove('hidden');
+
+  document.getElementById('aiQuizTitle').value   = d.title    || '';
+  document.getElementById('aiQuizTitleHi').value = d.titleHi  || '';
+  document.getElementById('aiReviewSub').textContent =
+    d.questions.length + ' questions generated — review and edit before publishing';
+
+  // Set category to match what was selected
+  const catSel = document.getElementById('aiQuizCat');
+  if (catSel && d.category) catSel.value = d.category;
+
+  document.getElementById('aiGeneratedQuestions').innerHTML = d.questions.map((q, i) => `
+    <div class="ai-review-q fade-in" id="aiq_${i}">
+      <button class="ai-remove-q" onclick="removeAiQuestion(${i})" title="Remove question">✕</button>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:8px">Q${i+1}</div>
+      <div class="ai-review-q-text" contenteditable="true" data-field="text" data-idx="${i}">${q.text}</div>
+      <div class="ai-review-q-text-hi" contenteditable="true" data-field="textHi" data-idx="${i}">${q.textHi || ''}</div>
+      <div class="ai-review-opts">
+        ${q.options.map((opt, oi) => `
+          <div class="ai-review-opt ${oi===q.correct?'correct':''}">
+            <span style="font-weight:700;margin-right:4px">${String.fromCharCode(65+oi)}.</span>
+            <span contenteditable="true" data-field="opt" data-idx="${i}" data-oi="${oi}">${opt}</span>
+            ${oi===q.correct ? ' ✓' : ''}
+          </div>
+          ${q.optionsHi?.[oi] ? `<div class="ai-review-opt-hi" contenteditable="true" data-field="optHi" data-idx="${i}" data-oi="${oi}">${q.optionsHi[oi]}</div>` : '<div></div>'}
+        `).join('')}
+      </div>
+      ${q.explanation ? `<div class="ai-review-expl">${q.explanation}</div>` : ''}
+    </div>`).join('');
+
+  // Sync edits back to _aiGeneratedData on input
+  document.getElementById('aiGeneratedQuestions').addEventListener('input', e => {
+    const el = e.target;
+    const field = el.dataset.field;
+    const idx   = parseInt(el.dataset.idx);
+    const oi    = el.dataset.oi !== undefined ? parseInt(el.dataset.oi) : null;
+    if (field === 'text')    _aiGeneratedData.questions[idx].text    = el.textContent;
+    if (field === 'textHi')  _aiGeneratedData.questions[idx].textHi  = el.textContent;
+    if (field === 'opt'  && oi !== null) _aiGeneratedData.questions[idx].options[oi]   = el.textContent;
+    if (field === 'optHi' && oi !== null) _aiGeneratedData.questions[idx].optionsHi[oi] = el.textContent;
+  });
+}
+
+function removeAiQuestion(idx) {
+  _aiGeneratedData.questions.splice(idx, 1);
+  renderAiReview();
+}
+
+// ── Publish the AI-generated quiz ────────────────────────
+async function publishAiQuiz() {
+  const d = _aiGeneratedData;
+  if (!d?.questions?.length) { toast('No questions to publish', 'error'); return; }
+
+  const title    = document.getElementById('aiQuizTitle').value.trim()   || d.title    || 'AI Generated Quiz';
+  const titleHi  = document.getElementById('aiQuizTitleHi').value.trim() || d.titleHi  || '';
+  const timeLimit= parseInt(document.getElementById('aiQuizTime').value) || 15;
+  const category = document.getElementById('aiQuizCat').value;
+
+  // Build questions in the same format as the manual builder
+  const questions = d.questions.map((q, i) => ({
+    id:            'q_ai_' + Date.now() + '_' + i,
+    text:          q.text,
+    textHi:        q.textHi        || '',
+    options:       q.options,
+    optionsHi:     q.optionsHi     || [],
+    correct:       q.correct,
+    explanation:   q.explanation   || '',
+    explanationHi: q.explanationHi || ''
+  }));
+
+  const quiz = {
+    id:        'quiz_ai_' + Date.now(),
+    title, titleHi, category,
+    desc:      d.desc   || 'AI-generated quiz from uploaded material.',
+    descHi:    d.descHi || '',
+    timeLimit, questions,
+    createdAt: new Date().toISOString(),
+    active:    true
+  };
+
+  showLoader('Publishing AI-generated quiz…');
+  const ok = await DB.saveQuiz(quiz);
+  hideLoader();
+
+  if (ok) {
+    toast('Quiz published successfully! ✅', 'success');
+    resetAiGenerator();
+    await adminTab('quizzes');
+  } else {
+    toast('Publish failed — check Supabase config', 'error');
+  }
+}
+
+// ── Update adminTab to include aigen ────────────────────
+// Patch the existing adminTab function to handle the new tab
+const _origAdminTab = adminTab;
+async function adminTab(tab) {
+  state.adminTab = tab;
+  const tabs = ['aigen', 'overview', 'quizzes', 'responses', 'students', 'resources'];
+  document.querySelectorAll('.admin-nav-btn').forEach((b, i) => b.classList.toggle('active', tabs[i] === tab));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  const sec = document.getElementById('admin-' + tab);
+  if (sec) sec.classList.add('active');
+  if      (tab === 'overview')   await renderAdminOverview();
+  else if (tab === 'quizzes')    await renderAdminQuizzes();
+  else if (tab === 'responses')  await renderAdminResponses();
+  else if (tab === 'students')   await renderAdminStudents();
+  else if (tab === 'resources')  await renderAdminResources();
+  // aigen tab needs no async data load — it's fully client-side
+}
+
 </script>
 </body>
 </html>
