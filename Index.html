@@ -138,6 +138,26 @@
   /* ── Lang indicator on quiz card ── */
   .bilingual-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--saffron-light); color: var(--saffron); padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
 
+  /* ── Paid / Free Quiz badges ── */
+  .quiz-type-free  { display:inline-flex;align-items:center;gap:4px;background:#e8f5e9;color:#2e7d32;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.3px; }
+  .quiz-type-paid  { display:inline-flex;align-items:center;gap:4px;background:var(--gold-light);color:#8a6100;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.3px; }
+  .quiz-locked-overlay { position:relative;overflow:hidden; }
+  .lock-badge { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--gold);color:#fff;padding:8px 18px;border-radius:99px;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(198,156,58,.3);white-space:nowrap;z-index:2;pointer-events:none; }
+  .quiz-locked-overlay::after { content:'';position:absolute;inset:0;background:rgba(252,251,249,.6);backdrop-filter:blur(1.5px);pointer-events:none; }
+
+  /* ── UPI Payment Modal ── */
+  .upi-modal-wrap { text-align:center;padding:8px 0; }
+  .upi-qr-box { background:var(--bg);border:2px dashed var(--border-dark);border-radius:var(--radius);padding:24px;margin:16px 0;display:flex;flex-direction:column;align-items:center;gap:12px; }
+  .upi-id-chip { background:var(--surface);border:1.5px solid var(--border-dark);border-radius:10px;padding:10px 18px;font-family:monospace;font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:10px;cursor:pointer; }
+  .upi-step { display:flex;align-items:flex-start;gap:12px;text-align:left;padding:10px 0;border-bottom:1px solid var(--border); }
+  .upi-step:last-child { border-bottom:none; }
+  .upi-step-num { width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px; }
+  .upi-step-text { font-size:14px;line-height:1.5; }
+  .upi-price-tag { font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--accent); }
+  .payment-row-pending { background:#fffbea; }
+  .payment-row-verified { background:#f0faf4; }
+  .payment-row-rejected { background:#fff5f5; }
+
   /* ── Quiz Attempt ── */
   .quiz-header { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
   .quiz-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
@@ -570,6 +590,7 @@
         <button class="admin-nav-btn" onclick="adminTab('quizzes')">Quizzes</button>
         <button class="admin-nav-btn" onclick="adminTab('responses')">Responses</button>
         <button class="admin-nav-btn" onclick="adminTab('students')">Students</button>
+        <button class="admin-nav-btn" onclick="adminTab('payments')">💳 Payments</button>
       </div>
       <div class="admin-section active" id="admin-overview">
         <div class="stats-grid" id="adminStats"></div>
@@ -579,7 +600,8 @@
       <div class="admin-section" id="admin-quizzes"><div id="adminQuizList"></div></div>
       <div class="admin-section" id="admin-responses"><div id="adminResponses"></div></div>
       <div class="admin-section" id="admin-students"><div id="adminStudents"></div></div>
-            <div class="admin-section" id="admin-resources">
+            <div class="admin-section" id="admin-payments"><div id="adminPaymentsList"></div></div>
+      <div class="admin-section" id="admin-resources">
         <div class="card" style="margin-bottom:24px">
           <div class="card-body">
             <h3 style="margin-bottom:16px;font-family:var(--font-display)">Upload New Material</h3>
@@ -696,7 +718,14 @@
                 </div>
                 <div class="form-group" style="margin-bottom:0">
                   <label class="form-label">Category</label>
-                  <select class="form-control" id="aiQuizCat">
+                  <select class="form-control" id="aiQuizIsPaid" onchange="document.getElementById('aiQuizPaidRow').style.display=this.value==='paid'?'flex':'none'">
+          <option value="free">✓ Free</option>
+          <option value="paid">💰 Paid</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-control" id="aiQuizCat">
                     <option value="UPSC">UPSC</option><option value="MPPSC">MPPSC</option>
                     <option value="SSC">SSC</option><option value="General">General</option>
                   </select>
@@ -751,6 +780,23 @@
       <div class="form-group">
         <label class="form-label">Time Limit (min)</label>
         <input class="form-control" id="qTime" type="number" value="15" min="1" max="120"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Quiz Type</label>
+        <select class="form-control" id="qIsPaid" onchange="document.getElementById('qPaidFields').style.display=this.value==='paid'?'grid':'none'">
+          <option value="free">✓ Free — open to all</option>
+          <option value="paid">💰 Paid — UPI payment required</option>
+        </select>
+      </div>
+      <div id="qPaidFields" style="display:none;grid-template-columns:1fr 1fr;gap:12px;margin-top:-8px">
+        <div class="form-group">
+          <label class="form-label">Price (₹)</label>
+          <input class="form-control" id="qPrice" type="number" value="49" min="1" placeholder="e.g. 49"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">UPI ID (optional)</label>
+          <input class="form-control" id="qUpiId" placeholder="yourname@upi"/>
+        </div>
       </div>
       <div class="form-group" style="grid-column:1/-1">
         <label class="form-label">Description (English)</label>
@@ -814,7 +860,10 @@ const DB = {
       time_limit:     quiz.timeLimit,
       questions:      quiz.questions,       // stored as JSONB
       active:         quiz.active,
-      created_at:     quiz.createdAt
+      created_at:     quiz.createdAt,
+      is_paid:        quiz.isPaid  || false,
+      price:          quiz.price   || 0,
+      upi_id:         quiz.upiId   || ''
     }]);
     if (error) { console.error('saveQuiz:', error.message); return false; }
     return true;
@@ -897,7 +946,10 @@ const DB = {
       timeLimit: r.time_limit,
       questions: r.questions      || [],
       active:    r.active,
-      createdAt: r.created_at
+      createdAt: r.created_at,
+      isPaid:    r.is_paid    || false,
+      price:     r.price      || 0,
+      upiId:     r.upi_id     || ''
     };
   },
   _normAttempt(r) {
@@ -917,6 +969,49 @@ const DB = {
       details:     r.details      || [],
       completedAt: r.completed_at
     };
+  },
+
+  /* ── Payments ────────────────────────────────────────── */
+  async savePayment(p) {
+    const { error } = await sb.from('payments').insert([{
+      id:          p.id,
+      user_id:     p.userId,
+      user_name:   p.userName,
+      user_email:  p.userEmail,
+      quiz_id:     p.quizId,
+      quiz_title:  p.quizTitle,
+      amount:      p.amount,
+      upi_txn_id:  p.upiTxnId,
+      status:      'pending',
+      created_at:  new Date().toISOString()
+    }]);
+    if (error) { console.error('savePayment:', error.message); return false; }
+    return true;
+  },
+
+  async getPayments() {
+    const { data, error } = await sb
+      .from('payments')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) { console.error('getPayments:', error.message); return []; }
+    return data || [];
+  },
+
+  async updatePaymentStatus(pid, status) {
+    const { error } = await sb.from('payments').update({ status }).eq('id', pid);
+    if (error) { console.error('updatePaymentStatus:', error.message); return false; }
+    return true;
+  },
+
+  async getUnlockedQuizIds(userId) {
+    const { data, error } = await sb
+      .from('payments')
+      .select('quiz_id')
+      .eq('user_id', userId)
+      .eq('status', 'verified');
+    if (error) return [];
+    return (data || []).map(r => r.quiz_id);
   }
 };
 
@@ -934,7 +1029,8 @@ let state = {
   adminTab:       'overview',
   lang:           'en',
   quizzes:  [],
-  attempts: []
+  attempts: [],
+  unlockedQuizIds: []
 };
 
 // ════════════════════════════════════════════════════════════
@@ -1204,6 +1300,7 @@ async function renderStudentHome() {
   showLoader(t('Loading quizzes…','प्रश्नोत्तरी लोड हो रही है…'));
   state.quizzes  = await DB.getQuizzes();
   state.attempts = await DB.getAttempts(state.user.id);
+  state.unlockedQuizIds = await DB.getUnlockedQuizIds(state.user.id);
   hideLoader();
 
   document.getElementById('statAttempted').textContent = state.attempts.length;
@@ -1245,10 +1342,13 @@ function renderQuizList() {
   const hi = state.lang === 'hi';
 
   container.innerHTML = list.map(q => {
-    const attempt = attempts.find(a => a.quizId === q.id);
-    const dateStr  = new Date(q.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    const hasHi    = !!(q.titleHi);
-    return `<div class="quiz-item fade-in" onclick="startQuizOrView('${q.id}')">
+    const attempt    = attempts.find(a => a.quizId === q.id);
+    const dateStr    = new Date(q.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    const hasHi      = !!(q.titleHi);
+    const isLocked   = q.isPaid && !state.unlockedQuizIds.includes(q.id) && !attempt;
+    const clickFn    = isLocked ? `openUpiPayment('${q.id}')` : `startQuizOrView('${q.id}')`;
+    return `<div class="quiz-item fade-in${isLocked?' quiz-locked-overlay':''}" onclick="${clickFn}" style="cursor:pointer">
+      ${isLocked ? `<div class="lock-badge">🔒 ₹${q.price} — Tap to Unlock</div>` : ''}
       <div class="quiz-item-info">
         <div class="quiz-item-title">${hi && q.titleHi ? q.titleHi : q.title}</div>
         ${hasHi && !hi ? `<div class="quiz-item-title-hi">${q.titleHi}</div>` : ''}
@@ -1261,10 +1361,13 @@ function renderQuizList() {
           <span class="meta-sep">·</span>
           <span class="meta-tag">${dateStr}</span>
           ${hasHi ? '<span class="bilingual-badge">EN · हि</span>' : ''}
-          ${attempt ? `<span class="badge badge-green">✓ ${attempt.score}%</span>` : `<span class="badge badge-gray">${t('New','नया')}</span>`}
+          ${q.isPaid ? `<span class="quiz-type-paid">💰 ₹${q.price}</span>` : '<span class="quiz-type-free">✓ Free</span>'}
+          ${attempt ? `<span class="badge badge-green">✓ ${attempt.score}%</span>` : (isLocked ? '' : `<span class="badge badge-gray">${t('New','नया')}</span>`)}
         </div>
       </div>
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+      ${isLocked
+        ? `<svg width="20" height="20" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+        : `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>`}
     </div>`;
   }).join('');
 }
@@ -1277,7 +1380,125 @@ async function startQuizOrView(qid) {
   if (attempt) { showResult(attempt); return; }
   const quiz = state.quizzes.find(q => q.id === qid);
   if (!quiz) return;
+  if (quiz.isPaid && !state.unlockedQuizIds.includes(quiz.id)) {
+    openUpiPayment(qid); return;
+  }
   startQuiz(quiz);
+}
+
+// ════════════════════════════════════════════════════════════
+//  UPI PAYMENT FLOW
+// ════════════════════════════════════════════════════════════
+const ADMIN_UPI_ID = '7000970922@nyes'; // ← Change to your real UPI ID
+
+function openUpiPayment(qid) {
+  const quiz = state.quizzes.find(q => q.id === qid);
+  if (!quiz) return;
+  const upiId = quiz.upiId || ADMIN_UPI_ID;
+  // Build UPI deep-link (works on Android; opens any UPI app)
+  const upiLink = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=GyankunJ+Academy&am=${quiz.price}&cu=INR&tn=${encodeURIComponent('Quiz: '+quiz.title)}`;
+
+  // Build QR URL via free API
+  const qrData  = encodeURIComponent(upiLink);
+  const qrUrl   = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrData}`;
+
+  const html = `
+    <div class="upi-modal-wrap">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">${quiz.title}</div>
+      <div class="upi-price-tag">₹${quiz.price}</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px">One-time payment · Lifetime access</div>
+
+      <div class="upi-qr-box">
+        <img class="upi-qr-img" src="${qrUrl}" alt="UPI QR Code" onerror="this.style.display='none'"/>
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600">Scan with any UPI app</div>
+        <div class="upi-id-chip" onclick="navigator.clipboard.writeText('${upiId}');toast('UPI ID copied!','success')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          ${upiId}
+        </div>
+      </div>
+
+      <div style="text-align:left;margin-bottom:8px">
+        <div class="upi-step">
+          <div class="upi-step-num">1</div>
+          <div class="upi-step-text">Open PhonePe, GPay, Paytm or any UPI app → Scan QR <strong>or</strong> send ₹${quiz.price} to <strong>${upiId}</strong></div>
+        </div>
+        <div class="upi-step">
+          <div class="upi-step-num">2</div>
+          <div class="upi-step-text">After payment, note the <strong>UPI Transaction ID</strong> (12-digit number shown in your app)</div>
+        </div>
+        <div class="upi-step">
+          <div class="upi-step-num">3</div>
+          <div class="upi-step-text">Enter the Transaction ID below and submit — admin will verify within a few hours</div>
+        </div>
+      </div>
+
+      <a href="${upiLink}" class="btn btn-primary btn-full" style="margin-bottom:12px;text-decoration:none">
+        📱 Open UPI App to Pay ₹${quiz.price}
+      </a>
+
+      <div class="upi-txn-input">
+        <label class="form-label">UPI Transaction ID</label>
+        <input class="form-control" id="upiTxnInput" placeholder="e.g. 123456789012" maxlength="30"/>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:6px">Found in payment confirmation SMS or app receipt</div>
+      </div>
+    </div>`;
+
+  // Inject into create-quiz modal (reuse it as a generic modal)
+  openGenericModal('💳 Pay to Unlock Quiz', html,
+    `submitUpiPayment('${qid}', '${quiz.title}', ${quiz.price}, '${upiId}')`,
+    'Submit Payment Request');
+}
+
+function openGenericModal(title, bodyHtml, onConfirmFn, confirmLabel = 'Confirm') {
+  let m = document.getElementById('modal-generic');
+  if (!m) {
+    m = document.createElement('div');
+    m.className = 'modal-overlay';
+    m.id = 'modal-generic';
+    m.innerHTML = `<div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="mg-title"></div>
+      <div id="mg-body"></div>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button class="btn btn-outline btn-full" onclick="closeModal('generic')">Cancel</button>
+        <button class="btn btn-primary btn-full" id="mg-confirm"></button>
+      </div>
+    </div>`;
+    m.addEventListener('click', () => closeModal('generic'));
+    document.body.appendChild(m);
+  }
+  document.getElementById('mg-title').textContent = title;
+  document.getElementById('mg-body').innerHTML    = bodyHtml;
+  document.getElementById('mg-confirm').textContent = confirmLabel;
+  document.getElementById('mg-confirm').onclick   = new Function(onConfirmFn);
+  openModal('generic');
+}
+
+async function submitUpiPayment(qid, quizTitle, amount, upiId) {
+  const txnId = document.getElementById('upiTxnInput')?.value?.trim();
+  if (!txnId || txnId.length < 6) { toast('Please enter a valid Transaction ID', 'error'); return; }
+
+  const payment = {
+    id:        'pay_' + Date.now(),
+    userId:    state.user.id,
+    userName:  state.user.name || state.user.email,
+    userEmail: state.user.email,
+    quizId:    qid,
+    quizTitle,
+    amount,
+    upiTxnId:  txnId
+  };
+
+  showLoader('Submitting payment request…');
+  const ok = await DB.savePayment(payment);
+  hideLoader();
+
+  if (ok) {
+    closeModal('generic');
+    toast('✅ Payment request submitted! Admin will verify within a few hours.', 'success');
+  } else {
+    toast('Submit failed — please try again', 'error');
+  }
 }
 
 function startQuiz(quiz) {
@@ -1563,7 +1784,7 @@ async function renderAdminPage() { await adminTab(state.adminTab || 'overview');
 async function adminTab(tab) {
   state.adminTab = tab;
   // Change 1: 'resources' is added to this array
-  const tabs = ['overview','quizzes','responses','students', 'resources']; 
+  const tabs = ['overview','quizzes','responses','students', 'payments', 'resources']; 
   document.querySelectorAll('.admin-nav-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===tab));
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.getElementById('admin-'+tab).classList.add('active');
@@ -1572,7 +1793,8 @@ async function adminTab(tab) {
   else if (tab==='responses') await renderAdminResponses();
   else if (tab==='students')  await renderAdminStudents();
   // Change 2: The new line telling it what to load when the Resources tab is clicked
-  else if (tab==='resources') await renderAdminResources(); 
+  else if (tab==='resources') await renderAdminResources();
+  else if (tab==='payments')  await renderAdminPayments();
 }
 
 
@@ -1586,11 +1808,16 @@ async function renderAdminOverview() {
   hideLoader();
 
   const students = profiles.filter(u => u.role !== 'admin');
+  const payments = await DB.getPayments();
+  const revenue  = payments.filter(p=>p.status==='verified').reduce((s,p)=>s+(p.amount||0),0);
+  const pending  = payments.filter(p=>p.status==='pending').length;
   document.getElementById('adminStats').innerHTML = `
     <div class="stat-card"><div class="stat-value">${quizzes.length}</div><div class="stat-label">Total Quizzes</div></div>
     <div class="stat-card"><div class="stat-value">${students.length}</div><div class="stat-label">Students</div></div>
     <div class="stat-card"><div class="stat-value">${attempts.length}</div><div class="stat-label">Responses</div></div>
-    <div class="stat-card"><div class="stat-value">${attempts.length ? Math.round(attempts.reduce((s,a)=>s+a.score,0)/attempts.length)+'%' : '—'}</div><div class="stat-label">Avg Score</div></div>`;
+    <div class="stat-card"><div class="stat-value">${attempts.length ? Math.round(attempts.reduce((s,a)=>s+a.score,0)/attempts.length)+'%' : '—'}</div><div class="stat-label">Avg Score</div></div>
+    <div class="stat-card"><div class="stat-value" style="color:var(--gold)">₹${revenue}</div><div class="stat-label">Revenue Collected</div></div>
+    <div class="stat-card"><div class="stat-value" style="color:var(--saffron)">${pending}</div><div class="stat-label">Pending Payments <span style="font-size:12px;cursor:pointer" onclick="adminTab('payments')">→ View</span></div></div>`;
 
   const recent = attempts.slice(0,8);
   document.getElementById('recentActivity').innerHTML = recent.length ? `
@@ -1630,6 +1857,7 @@ async function renderAdminQuizzes() {
             <span class="meta-tag">${qa.length} attempts</span>
             ${avg!==null ? `<span class="badge badge-green">Avg ${avg}%</span>` : ''}
             ${hasHi ? '<span class="bilingual-badge">EN · हि</span>' : '<span class="badge badge-gray">EN only</span>'}
+            ${q.isPaid ? `<span class="quiz-type-paid">💰 ₹${q.price}</span>` : '<span class="quiz-type-free">✓ Free</span>'}
             ${q.active ? '<span class="badge badge-green">Live</span>' : '<span class="badge badge-gray">Draft</span>'}
           </div>
         </div>
@@ -1863,7 +2091,10 @@ async function saveQuiz() {
     questions.push({ id:'q_'+Date.now()+'_'+qb.id, text, options, correct:qb.correct, explanation, textHi, optionsHi, explanationHi });
   }
 
-  const quiz = { id:'quiz_'+Date.now(), title, titleHi, category, desc, descHi, timeLimit, questions, createdAt: new Date().toISOString(), active: true };
+  const isPaid = document.getElementById('qIsPaid')?.value === 'paid';
+  const price  = isPaid ? (parseInt(document.getElementById('qPrice')?.value) || 49) : 0;
+  const upiId  = isPaid ? (document.getElementById('qUpiId')?.value?.trim() || '') : '';
+  const quiz = { id:'quiz_'+Date.now(), title, titleHi, category, desc, descHi, timeLimit, questions, createdAt: new Date().toISOString(), active: true, isPaid, price, upiId };
 
   showLoader('Publishing quiz…');
   const ok = await DB.saveQuiz(quiz);
@@ -1877,6 +2108,65 @@ async function saveQuiz() {
   } else {
     toast('Failed to save quiz — check Supabase config', 'error');
   }
+}
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN PAYMENTS
+// ════════════════════════════════════════════════════════════
+async function renderAdminPayments() {
+  showLoader('Loading payments…');
+  const payments = await DB.getPayments();
+  hideLoader();
+
+  const statusBadge = s =>
+    s === 'verified' ? '<span class="badge badge-green">✅ Verified</span>' :
+    s === 'rejected' ? '<span class="badge badge-red">❌ Rejected</span>' :
+                       '<span class="badge badge-gold">⏳ Pending</span>';
+
+  const rowClass = s =>
+    s === 'verified' ? 'payment-row-verified' :
+    s === 'rejected' ? 'payment-row-rejected' : 'payment-row-pending';
+
+  document.getElementById('adminPaymentsList').innerHTML = payments.length ? `
+    <div style="margin-bottom:12px;font-size:13px;color:var(--text-muted)">
+      ${payments.filter(p=>p.status==='pending').length} pending · ${payments.filter(p=>p.status==='verified').length} verified
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Student</th><th>Quiz</th><th>Amount</th><th>UPI TXN ID</th><th>Status</th><th>Action</th><th>Date</th></tr></thead>
+      <tbody>${payments.map(p => `<tr class="${rowClass(p.status)}">
+        <td><strong>${p.user_name||'—'}</strong><br><span style="font-size:11px;color:var(--text-muted)">${p.user_email||''}</span></td>
+        <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.quiz_title||'—'}</td>
+        <td style="font-weight:700;color:var(--accent)">₹${p.amount||0}</td>
+        <td><code style="font-size:12px;background:var(--bg);padding:2px 6px;border-radius:4px">${p.upi_txn_id||'—'}</code></td>
+        <td>${statusBadge(p.status)}</td>
+        <td>
+          ${p.status === 'pending' ? `
+            <button class="btn btn-primary btn-sm" style="font-size:11px;padding:5px 10px" onclick="verifyPayment('${p.id}')">✅ Verify</button>
+            <button class="btn btn-danger btn-sm" style="font-size:11px;padding:5px 10px;margin-top:4px" onclick="rejectPayment('${p.id}')">❌ Reject</button>
+          ` : '—'}
+        </td>
+        <td style="color:var(--text-muted);white-space:nowrap;font-size:12px">${new Date(p.created_at||Date.now()).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>` :
+    `<div class="empty-state"><h3>No payment requests yet</h3><p>Payment submissions will appear here for verification.</p></div>`;
+}
+
+async function verifyPayment(pid) {
+  if (!confirm('Mark this payment as VERIFIED? The student will get quiz access immediately.')) return;
+  showLoader('Verifying…');
+  const ok = await DB.updatePaymentStatus(pid, 'verified');
+  hideLoader();
+  if (ok) { toast('Payment verified ✅ — student now has access', 'success'); await renderAdminPayments(); }
+  else toast('Update failed', 'error');
+}
+
+async function rejectPayment(pid) {
+  if (!confirm('Reject this payment? The student will not get access.')) return;
+  showLoader('Rejecting…');
+  const ok = await DB.updatePaymentStatus(pid, 'rejected');
+  hideLoader();
+  if (ok) { toast('Payment rejected', 'success'); await renderAdminPayments(); }
+  else toast('Update failed', 'error');
 }
 
 // ════════════════════════════════════════════════════════════
@@ -2356,6 +2646,8 @@ async function publishAiQuiz() {
   const titleHi  = document.getElementById('aiQuizTitleHi').value.trim() || d.titleHi  || '';
   const timeLimit= parseInt(document.getElementById('aiQuizTime').value) || 15;
   const category = document.getElementById('aiQuizCat').value;
+  const isPaid   = document.getElementById('aiQuizIsPaid')?.value === 'paid';
+  const price    = isPaid ? (parseInt(document.getElementById('aiQuizPrice')?.value) || 49) : 0;
 
   // Build questions in the same format as the manual builder
   const questions = d.questions.map((q, i) => ({
@@ -2376,7 +2668,10 @@ async function publishAiQuiz() {
     descHi:    d.descHi || '',
     timeLimit, questions,
     createdAt: new Date().toISOString(),
-    active:    true
+    active:    true,
+    isPaid,
+    price,
+    upiId: ''
   };
 
   showLoader('Publishing AI-generated quiz…');
@@ -2397,7 +2692,7 @@ async function publishAiQuiz() {
 const _origAdminTab = adminTab;
 async function adminTab(tab) {
   state.adminTab = tab;
-  const tabs = ['aigen', 'overview', 'quizzes', 'responses', 'students', 'resources'];
+  const tabs = ['aigen', 'overview', 'quizzes', 'responses', 'students', 'payments', 'resources'];
   document.querySelectorAll('.admin-nav-btn').forEach((b, i) => b.classList.toggle('active', tabs[i] === tab));
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   const sec = document.getElementById('admin-' + tab);
@@ -2407,6 +2702,7 @@ async function adminTab(tab) {
   else if (tab === 'responses')  await renderAdminResponses();
   else if (tab === 'students')   await renderAdminStudents();
   else if (tab === 'resources')  await renderAdminResources();
+  else if (tab === 'payments')   await renderAdminPayments();
   // aigen tab needs no async data load — it's fully client-side
 }
 
