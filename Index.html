@@ -138,6 +138,25 @@
   /* ── Lang indicator on quiz card ── */
   .bilingual-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--saffron-light); color: var(--saffron); padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
 
+
+  /* ── Scheduled Quiz ── */
+  .schedule-badge { display:inline-flex;align-items:center;gap:5px;background:#e8f0fe;color:#1a56db;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700; }
+  .schedule-badge.past { background:var(--accent-light);color:var(--accent); }
+  .schedule-countdown { font-size:12px;color:#1a56db;font-weight:600;margin-top:4px; }
+
+  /* ── CSV Import ── */
+  .csv-drop-zone { border:2px dashed var(--border-dark);border-radius:var(--radius);padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);position:relative; }
+  .csv-drop-zone:hover,.csv-drop-zone.drag-over { border-color:var(--accent);background:var(--accent-light); }
+  .csv-drop-zone input[type=file] { position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%; }
+  .csv-preview-table { width:100%;border-collapse:collapse;font-size:12px;margin-top:12px; }
+  .csv-preview-table th { background:var(--bg);padding:8px 10px;text-align:left;font-weight:600;color:var(--text-muted);border-bottom:2px solid var(--border); }
+  .csv-preview-table td { padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .csv-preview-table tr:last-child td { border-bottom:none; }
+  .csv-row-valid   td:first-child { border-left:3px solid #27ae60; }
+  .csv-row-invalid td:first-child { border-left:3px solid var(--red); }
+  .csv-import-stats { display:flex;gap:12px;padding:12px 16px;background:var(--bg);border-radius:var(--radius-sm);margin:12px 0;flex-wrap:wrap; }
+  .csv-stat { font-size:13px;font-weight:600; }
+
   /* ── Paid / Free Quiz badges ── */
   .quiz-type-free  { display:inline-flex;align-items:center;gap:4px;background:#e8f5e9;color:#2e7d32;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.3px; }
   .quiz-type-paid  { display:inline-flex;align-items:center;gap:4px;background:var(--gold-light);color:#8a6100;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.3px; }
@@ -591,6 +610,8 @@
         <button class="admin-nav-btn" onclick="adminTab('responses')">Responses</button>
         <button class="admin-nav-btn" onclick="adminTab('students')">Students</button>
         <button class="admin-nav-btn" onclick="adminTab('payments')">💳 Payments</button>
+        <button class="admin-nav-btn" onclick="adminTab('scheduled')">📅 Scheduled</button>
+        <button class="admin-nav-btn" onclick="adminTab('csvimport')">📥 CSV Import</button>
       </div>
       <div class="admin-section active" id="admin-overview">
         <div class="stats-grid" id="adminStats"></div>
@@ -601,6 +622,8 @@
       <div class="admin-section" id="admin-responses"><div id="adminResponses"></div></div>
       <div class="admin-section" id="admin-students"><div id="adminStudents"></div></div>
             <div class="admin-section" id="admin-payments"><div id="adminPaymentsList"></div></div>
+      <div class="admin-section" id="admin-scheduled"><div id="adminScheduledWrap"></div></div>
+      <div class="admin-section" id="admin-csvimport"><div id="adminCsvWrap"></div></div>
       <div class="admin-section" id="admin-resources">
         <div class="card" style="margin-bottom:24px">
           <div class="card-body">
@@ -798,6 +821,11 @@
           <input class="form-control" id="qUpiId" placeholder="yourname@upi"/>
         </div>
       </div>
+      <div class="form-group">
+        <label class="form-label">📅 Schedule Publish (optional)</label>
+        <input class="form-control" id="qScheduleAt" type="datetime-local"/>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:5px">Leave blank to publish immediately. Set a future time to auto-publish.</div>
+      </div>
       <div class="form-group" style="grid-column:1/-1">
         <label class="form-label">Description (English)</label>
         <textarea class="form-control" id="qDesc" rows="2" placeholder="Brief description..."></textarea>
@@ -863,10 +891,44 @@ const DB = {
       created_at:     quiz.createdAt,
       is_paid:        quiz.isPaid  || false,
       price:          quiz.price   || 0,
-      upi_id:         quiz.upiId   || ''
+      upi_id:         quiz.upiId   || '',
+      publish_at:     quiz.publishAt || null
     }]);
     if (error) { console.error('saveQuiz:', error.message); return false; }
     return true;
+  },
+
+  async scheduleQuiz(qid, publishAt) {
+    const { error } = await sb
+      .from('quizzes')
+      .update({ publish_at: publishAt, active: false })
+      .eq('id', qid);
+    if (error) { console.error('scheduleQuiz:', error.message); return false; }
+    return true;
+  },
+
+  async getScheduledQuizzes() {
+    const { data, error } = await sb
+      .from('quizzes')
+      .select('*')
+      .not('publish_at', 'is', null)
+      .order('publish_at', { ascending: true });
+    if (error) { console.error('getScheduled:', error.message); return []; }
+    return (data || []).map(DB._normQuiz);
+  },
+
+  async autoPublishDue() {
+    const now = new Date().toISOString();
+    const { data, error } = await sb
+      .from('quizzes')
+      .select('id')
+      .eq('active', false)
+      .not('publish_at', 'is', null)
+      .lte('publish_at', now);
+    if (error || !data || !data.length) return 0;
+    const ids = data.map(r => r.id);
+    await sb.from('quizzes').update({ active: true }).in('id', ids);
+    return ids.length;
   },
 
   async toggleQuizActive(qid, active) {
@@ -949,7 +1011,8 @@ const DB = {
       createdAt: r.created_at,
       isPaid:    r.is_paid    || false,
       price:     r.price      || 0,
-      upiId:     r.upi_id     || ''
+      upiId:     r.upi_id     || '',
+      publishAt: r.publish_at || null
     };
   },
   _normAttempt(r) {
@@ -1783,18 +1846,20 @@ async function renderAdminPage() { await adminTab(state.adminTab || 'overview');
 
 async function adminTab(tab) {
   state.adminTab = tab;
-  // Change 1: 'resources' is added to this array
-  const tabs = ['overview','quizzes','responses','students', 'payments', 'resources']; 
-  document.querySelectorAll('.admin-nav-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===tab));
-  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('admin-'+tab).classList.add('active');
-  if (tab==='overview')   await renderAdminOverview();
-  else if (tab==='quizzes')   await renderAdminQuizzes();
-  else if (tab==='responses') await renderAdminResponses();
-  else if (tab==='students')  await renderAdminStudents();
-  // Change 2: The new line telling it what to load when the Resources tab is clicked
-  else if (tab==='resources') await renderAdminResources();
-  else if (tab==='payments')  await renderAdminPayments();
+  const tabs = ['aigen','resources','overview','quizzes','responses','students','payments','scheduled','csvimport'];
+  document.querySelectorAll('.admin-nav-btn').forEach(function(b,i) { b.classList.toggle('active', tabs[i]===tab); });
+  document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.remove('active'); });
+  var sec = document.getElementById('admin-'+tab);
+  if (sec) sec.classList.add('active');
+  if      (tab==='overview')   await renderAdminOverview();
+  else if (tab==='quizzes')    await renderAdminQuizzes();
+  else if (tab==='responses')  await renderAdminResponses();
+  else if (tab==='students')   await renderAdminStudents();
+  else if (tab==='resources')  await renderAdminResources();
+  else if (tab==='payments')   await renderAdminPayments();
+  else if (tab==='scheduled')  await renderAdminScheduled();
+  else if (tab==='csvimport')  renderAdminCsvImport();
+  // aigen tab: no data load needed
 }
 
 
@@ -1858,7 +1923,7 @@ async function renderAdminQuizzes() {
             ${avg!==null ? `<span class="badge badge-green">Avg ${avg}%</span>` : ''}
             ${hasHi ? '<span class="bilingual-badge">EN · हि</span>' : '<span class="badge badge-gray">EN only</span>'}
             ${q.isPaid ? `<span class="quiz-type-paid">💰 ₹${q.price}</span>` : '<span class="quiz-type-free">✓ Free</span>'}
-            ${q.active ? '<span class="badge badge-green">Live</span>' : '<span class="badge badge-gray">Draft</span>'}
+            ${q.publishAt && !q.active ? '<span class="schedule-badge">📅 ' + new Date(q.publishAt).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) + '</span>' : (q.active ? '<span class="badge badge-green">Live</span>' : '<span class="badge badge-gray">Draft</span>')}
           </div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0">
@@ -2091,10 +2156,13 @@ async function saveQuiz() {
     questions.push({ id:'q_'+Date.now()+'_'+qb.id, text, options, correct:qb.correct, explanation, textHi, optionsHi, explanationHi });
   }
 
-  const isPaid = document.getElementById('qIsPaid')?.value === 'paid';
-  const price  = isPaid ? (parseInt(document.getElementById('qPrice')?.value) || 49) : 0;
-  const upiId  = isPaid ? (document.getElementById('qUpiId')?.value?.trim() || '') : '';
-  const quiz = { id:'quiz_'+Date.now(), title, titleHi, category, desc, descHi, timeLimit, questions, createdAt: new Date().toISOString(), active: true, isPaid, price, upiId };
+  const isPaid     = document.getElementById('qIsPaid') ? (document.getElementById('qIsPaid').value === 'paid') : false;
+  const price      = isPaid ? (parseInt((document.getElementById('qPrice') || {value:'49'}).value) || 49) : 0;
+  const upiId      = isPaid ? ((document.getElementById('qUpiId') || {value:''}).value.trim()) : '';
+  const scheduleRaw= (document.getElementById('qScheduleAt') || {value:''}).value;
+  const publishAt  = scheduleRaw ? new Date(scheduleRaw).toISOString() : null;
+  const isScheduled= publishAt && new Date(publishAt) > new Date();
+  const quiz = { id:'quiz_'+Date.now(), title, titleHi, category, desc, descHi, timeLimit, questions, createdAt: new Date().toISOString(), active: !isScheduled, isPaid, price, upiId, publishAt };
 
   showLoader('Publishing quiz…');
   const ok = await DB.saveQuiz(quiz);
@@ -2168,6 +2236,349 @@ async function rejectPayment(pid) {
   if (ok) { toast('Payment rejected', 'success'); await renderAdminPayments(); }
   else toast('Update failed', 'error');
 }
+
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN POWER TOOLS — Scheduled Quiz
+// ════════════════════════════════════════════════════════════
+async function renderAdminScheduled() {
+  showLoader('Loading scheduled quizzes...');
+  // Auto-publish any due quizzes first
+  const published = await DB.autoPublishDue();
+  if (published > 0) toast(published + ' quiz(zes) auto-published!', 'success');
+
+  const quizzes = await DB.getQuizzes();
+  hideLoader();
+
+  const scheduled = quizzes.filter(function(q) { return q.publishAt; });
+  const now = new Date();
+
+  var html = '<div class="card" style="margin-bottom:24px"><div class="card-body">';
+  html += '<h3 style="font-family:var(--font-display);margin-bottom:6px">Schedule a Quiz</h3>';
+  html += '<p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Pick any existing quiz and set a future date/time — it will auto-publish when the time arrives.</p>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  html += '<div class="form-group" style="grid-column:1/-1"><label class="form-label">Select Quiz</label>';
+  html += '<select class="form-control" id="schedQuizSel">';
+  quizzes.forEach(function(q) {
+    html += '<option value="' + q.id + '">' + q.title + ' (' + (q.active ? 'Live' : 'Draft') + ')</option>';
+  });
+  html += '</select></div>';
+  html += '<div class="form-group" style="grid-column:1/-1"><label class="form-label">Publish Date & Time</label>';
+  html += '<input class="form-control" id="schedDateTime" type="datetime-local"/>';
+  html += '<div style="font-size:11px;color:var(--text-muted);margin-top:5px">The quiz will go Live automatically at this time. It will be set to Draft until then.</div></div>';
+  html += '</div>';
+  html += '<button class="btn btn-primary btn-full" style="margin-top:4px" onclick="applySchedule()">📅 Schedule Quiz</button>';
+  html += '</div></div>';
+
+  if (scheduled.length) {
+    html += '<div class="section-header"><div class="section-title" style="font-size:17px">Scheduled Queue</div></div>';
+    html += '<div class="quiz-list">';
+    scheduled.forEach(function(q) {
+      var pub = new Date(q.publishAt);
+      var isPast = pub <= now;
+      var diff = pub - now;
+      var hrs = Math.floor(diff / 3600000);
+      var mins = Math.floor((diff % 3600000) / 60000);
+      var countdown = isPast ? 'Published' : (hrs > 0 ? hrs + 'h ' + mins + 'm remaining' : mins + 'm remaining');
+      html += '<div class="quiz-item" style="cursor:default">';
+      html += '<div class="quiz-item-info">';
+      html += '<div class="quiz-item-title">' + q.title + '</div>';
+      html += '<div class="quiz-item-meta">';
+      html += '<span class="cat-chip cat-' + q.category.toLowerCase() + '">' + q.category + '</span>';
+      html += '<span class="' + (isPast ? 'schedule-badge past' : 'schedule-badge') + '">📅 ' + pub.toLocaleString('en-IN', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) + '</span>';
+      html += '<span class="schedule-countdown">' + (isPast ? '✅ ' : '⏳ ') + countdown + '</span>';
+      html += '</div></div>';
+      html += '<button class="btn btn-danger btn-sm" onclick="cancelSchedule(\'' + q.id + '\')">Cancel</button>';
+      html += '</div>';
+    });
+    html += '</div>';
+  } else {
+    html += '<div class="empty-state"><h3>No scheduled quizzes</h3><p>Use the form above to schedule a quiz for future auto-publish.</p></div>';
+  }
+
+  document.getElementById('adminScheduledWrap').innerHTML = html;
+}
+
+async function applySchedule() {
+  var qid = (document.getElementById('schedQuizSel') || {value:''}).value;
+  var dt  = (document.getElementById('schedDateTime') || {value:''}).value;
+  if (!qid || !dt) { toast('Select a quiz and set a date/time', 'error'); return; }
+  if (new Date(dt) <= new Date()) { toast('Schedule time must be in the future', 'error'); return; }
+  showLoader('Scheduling...');
+  var ok = await DB.scheduleQuiz(qid, new Date(dt).toISOString());
+  hideLoader();
+  if (ok) {
+    toast('📅 Quiz scheduled for ' + new Date(dt).toLocaleString('en-IN', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}), 'success');
+    await renderAdminScheduled();
+  } else {
+    toast('Scheduling failed', 'error');
+  }
+}
+
+async function cancelSchedule(qid) {
+  if (!confirm('Cancel schedule? Quiz will remain as Draft.')) return;
+  showLoader('Cancelling...');
+  var ok = await DB.scheduleQuiz(qid, null);
+  hideLoader();
+  if (ok) { toast('Schedule cancelled — quiz is now Draft', 'success'); await renderAdminScheduled(); }
+  else toast('Failed', 'error');
+}
+
+// ════════════════════════════════════════════════════════════
+//  ADMIN POWER TOOLS — CSV Bulk Import
+// ════════════════════════════════════════════════════════════
+var _csvParsedQuestions = [];
+var _csvErrors = [];
+
+function renderAdminCsvImport() {
+  document.getElementById('adminCsvWrap').innerHTML = `
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-body">
+        <h3 style="font-family:var(--font-display);margin-bottom:6px">Bulk Import via CSV</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
+          Upload a CSV file to create a full quiz instantly. Each row = one question.
+        </p>
+
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:18px;font-size:13px">
+          <div style="font-weight:700;margin-bottom:8px">Required CSV columns (in order):</div>
+          <code style="font-size:11px;line-height:1.8;display:block;color:var(--accent)">
+            question_en, option_a, option_b, option_c, option_d, correct_answer, explanation_en, question_hi, option_a_hi, option_b_hi, option_c_hi, option_d_hi, explanation_hi
+          </code>
+          <div style="margin-top:8px;color:var(--text-muted);font-size:12px">
+            • <strong>correct_answer</strong>: A, B, C, or D<br>
+            • Hindi columns (question_hi onward) are optional — leave blank for English-only<br>
+            • First row must be the header row
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="downloadCsvTemplate()">⬇ Download Template CSV</button>
+        </div>
+
+        <div class="csv-drop-zone" id="csvDropZone" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleCsvDrop(event)">
+          <input type="file" accept=".csv,text/csv" onchange="handleCsvFile(this.files[0])"/>
+          <div style="font-size:32px;margin-bottom:10px">📊</div>
+          <div style="font-weight:700;margin-bottom:4px">Drop CSV file here or click to browse</div>
+          <div style="font-size:12px;color:var(--text-muted)">Max 500 questions per import</div>
+        </div>
+
+        <div id="csvPreviewArea" style="display:none;margin-top:20px">
+          <div class="csv-import-stats" id="csvStats"></div>
+          <div style="overflow-x:auto;max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm)">
+            <table class="csv-preview-table" id="csvPreviewTable"></table>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px">
+            <div class="form-group">
+              <label class="form-label">Quiz Title</label>
+              <input class="form-control" id="csvQuizTitle" placeholder="e.g. UPSC History — Batch 1"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-control" id="csvQuizCat">
+                <option>UPSC</option><option>MPPSC</option><option>SSC</option><option>General</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Time Limit (min)</label>
+              <input class="form-control" id="csvQuizTime" type="number" value="20"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Type</label>
+              <select class="form-control" id="csvQuizPaid">
+                <option value="free">✓ Free</option>
+                <option value="paid">💰 Paid</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">📅 Schedule Publish (optional)</label>
+              <input class="form-control" id="csvScheduleAt" type="datetime-local"/>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:8px">
+            <button class="btn btn-outline btn-full" onclick="resetCsvImport()">✕ Clear</button>
+            <button class="btn btn-primary btn-full btn-lg" id="csvImportBtn" onclick="importCsvQuiz()">
+              ✅ Import & Create Quiz
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function handleCsvDrop(e) {
+  e.preventDefault();
+  document.getElementById('csvDropZone').classList.remove('drag-over');
+  var file = e.dataTransfer.files[0];
+  if (file) handleCsvFile(file);
+}
+
+function handleCsvFile(file) {
+  if (!file || !file.name.toLowerCase().endsWith('.csv')) {
+    toast('Please upload a .csv file', 'error'); return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) { parseCsv(e.target.result); };
+  reader.readAsText(file);
+}
+
+function parseCsv(text) {
+  var lines = text.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l; });
+  if (lines.length < 2) { toast('CSV must have at least a header row and one data row', 'error'); return; }
+
+  var headers = lines[0].split(',').map(function(h) { return h.trim().toLowerCase().replace(/"/g,''); });
+  var reqCols  = ['question_en','option_a','option_b','option_c','option_d','correct_answer'];
+  var missing  = reqCols.filter(function(c) { return headers.indexOf(c) === -1; });
+  if (missing.length) { toast('Missing columns: ' + missing.join(', '), 'error'); return; }
+
+  _csvParsedQuestions = [];
+  _csvErrors = [];
+
+  for (var i = 1; i < lines.length && i <= 501; i++) {
+    var row = splitCsvRow(lines[i]);
+    var get = function(col) {
+      var idx = headers.indexOf(col);
+      return idx >= 0 ? (row[idx] || '').trim().replace(/^"|"$/g,'') : '';
+    };
+
+    var qEn   = get('question_en');
+    var optA  = get('option_a');
+    var optB  = get('option_b');
+    var optC  = get('option_c');
+    var optD  = get('option_d');
+    var ans   = get('correct_answer').toUpperCase();
+    var corrMap = {A:0,B:1,C:2,D:3};
+    var corr  = corrMap[ans];
+
+    var rowErrors = [];
+    if (!qEn)            rowErrors.push('Missing question');
+    if (!optA||!optB||!optC||!optD) rowErrors.push('Missing option(s)');
+    if (corr === undefined) rowErrors.push('correct_answer must be A/B/C/D');
+
+    if (rowErrors.length) {
+      _csvErrors.push({ row: i, errors: rowErrors });
+    } else {
+      _csvParsedQuestions.push({
+        id:            'q_csv_' + Date.now() + '_' + i,
+        text:          qEn,
+        options:       [optA, optB, optC, optD],
+        correct:       corr,
+        explanation:   get('explanation_en'),
+        textHi:        get('question_hi'),
+        optionsHi:     [get('option_a_hi'), get('option_b_hi'), get('option_c_hi'), get('option_d_hi')],
+        explanationHi: get('explanation_hi')
+      });
+    }
+  }
+
+  renderCsvPreview();
+}
+
+function splitCsvRow(row) {
+  var result = [], current = '', inQuote = false;
+  for (var ci = 0; ci < row.length; ci++) {
+    var ch = row[ci];
+    if (ch === '"') { inQuote = !inQuote; }
+    else if (ch === ',' && !inQuote) { result.push(current); current = ''; }
+    else { current += ch; }
+  }
+  result.push(current);
+  return result;
+}
+
+function renderCsvPreview() {
+  var area = document.getElementById('csvPreviewArea');
+  if (!area) return;
+  area.style.display = 'block';
+
+  var valid   = _csvParsedQuestions.length;
+  var invalid = _csvErrors.length;
+
+  document.getElementById('csvStats').innerHTML =
+    '<span class="csv-stat" style="color:#27ae60">✅ ' + valid + ' valid questions</span>' +
+    (invalid ? '<span class="csv-stat" style="color:var(--red)">❌ ' + invalid + ' rows with errors</span>' : '') +
+    '<span class="csv-stat" style="color:var(--text-muted)">Total: ' + (valid + invalid) + ' rows</span>';
+
+  var preview = _csvParsedQuestions.slice(0, 10);
+  var tableHtml = '<thead><tr><th>#</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th></tr></thead><tbody>';
+  preview.forEach(function(q, i) {
+    var letters = ['A','B','C','D'];
+    tableHtml += '<tr class="csv-row-valid"><td>' + (i+1) + '</td><td title="' + q.text + '">' + q.text.substring(0,50) + (q.text.length>50?'...':'') + '</td>';
+    q.options.forEach(function(o) { tableHtml += '<td title="' + o + '">' + o.substring(0,18) + (o.length>18?'...':'') + '</td>'; });
+    tableHtml += '<td style="font-weight:700;color:var(--accent)">' + letters[q.correct] + '</td></tr>';
+  });
+  if (valid > 10) tableHtml += '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);font-size:12px;padding:10px">... and ' + (valid-10) + ' more questions</td></tr>';
+  if (_csvErrors.length) {
+    _csvErrors.slice(0,3).forEach(function(e) {
+      tableHtml += '<tr class="csv-row-invalid"><td>Row ' + e.row + '</td><td colspan="6" style="color:var(--red)">' + e.errors.join(', ') + '</td></tr>';
+    });
+  }
+  tableHtml += '</tbody>';
+  document.getElementById('csvPreviewTable').innerHTML = tableHtml;
+
+  document.getElementById('csvImportBtn').disabled = valid === 0;
+}
+
+async function importCsvQuiz() {
+  if (!_csvParsedQuestions.length) { toast('No valid questions to import', 'error'); return; }
+  var title = (document.getElementById('csvQuizTitle') || {value:''}).value.trim();
+  if (!title) { toast('Enter a quiz title', 'error'); return; }
+  var cat      = (document.getElementById('csvQuizCat') || {value:'UPSC'}).value;
+  var timeLimit= parseInt((document.getElementById('csvQuizTime') || {value:'20'}).value) || 20;
+  var isPaid   = (document.getElementById('csvQuizPaid') || {value:'free'}).value === 'paid';
+  var schedRaw = (document.getElementById('csvScheduleAt') || {value:''}).value;
+  var publishAt= schedRaw ? new Date(schedRaw).toISOString() : null;
+  var isScheduled = publishAt && new Date(publishAt) > new Date();
+
+  var quiz = {
+    id:        'quiz_csv_' + Date.now(),
+    title:     title,
+    titleHi:   '',
+    category:  cat,
+    desc:      'Imported from CSV — ' + _csvParsedQuestions.length + ' questions',
+    descHi:    '',
+    timeLimit: timeLimit,
+    questions: _csvParsedQuestions,
+    createdAt: new Date().toISOString(),
+    active:    !isScheduled,
+    isPaid:    isPaid,
+    price:     0,
+    upiId:     '',
+    publishAt: publishAt
+  };
+
+  showLoader('Importing ' + _csvParsedQuestions.length + ' questions...');
+  var ok = await DB.saveQuiz(quiz);
+  hideLoader();
+
+  if (ok) {
+    toast('✅ ' + _csvParsedQuestions.length + ' questions imported!' + (isScheduled ? ' Scheduled for ' + new Date(publishAt).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : ' Quiz is now Live.'), 'success');
+    resetCsvImport();
+    if (isScheduled) adminTab('scheduled'); else adminTab('quizzes');
+  } else {
+    toast('Import failed — check console', 'error');
+  }
+}
+
+function resetCsvImport() {
+  _csvParsedQuestions = [];
+  _csvErrors = [];
+  renderAdminCsvImport();
+}
+
+function downloadCsvTemplate() {
+  var header = 'question_en,option_a,option_b,option_c,option_d,correct_answer,explanation_en,question_hi,option_a_hi,option_b_hi,option_c_hi,option_d_hi,explanation_hi';
+  var row1   = '"Who is the constitutional head of India?","President","Prime Minister","Chief Justice","Speaker","A","Article 52 — The President shall be the head of state.","भारत का संवैधानिक प्रमुख कौन है?","राष्ट्रपति","प्रधानमंत्री","मुख्य न्यायाधीश","स्पीकर","अनुच्छेद 52 — राष्ट्रपति राज्य का प्रमुख होगा।"';
+  var row2   = '"Which article relates to Fundamental Rights?","Article 12-35","Article 36-51","Article 52-78","Article 79-122","A","Part III of the Constitution (Articles 12–35) deals with Fundamental Rights.","मौलिक अधिकार किस अनुच्छेद से संबंधित हैं?","अनुच्छेद 12-35","अनुच्छेद 36-51","अनुच्छेद 52-78","अनुच्छेद 79-122","भाग III (अनुच्छेद 12–35) मौलिक अधिकारों से संबंधित है।"';
+  var csv    = header + '\n' + row1 + '\n' + row2;
+  var blob   = new Blob([csv], {type:'text/csv'});
+  var a      = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'CivilPrep_Quiz_Template.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast('Template downloaded!', 'success');
+}
+
 
 // ════════════════════════════════════════════════════════════
 //  PDF EXPORT
@@ -2690,21 +3101,7 @@ async function publishAiQuiz() {
 // ── Update adminTab to include aigen ────────────────────
 // Patch the existing adminTab function to handle the new tab
 const _origAdminTab = adminTab;
-async function adminTab(tab) {
-  state.adminTab = tab;
-  const tabs = ['aigen', 'overview', 'quizzes', 'responses', 'students', 'payments', 'resources'];
-  document.querySelectorAll('.admin-nav-btn').forEach((b, i) => b.classList.toggle('active', tabs[i] === tab));
-  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-  const sec = document.getElementById('admin-' + tab);
-  if (sec) sec.classList.add('active');
-  if      (tab === 'overview')   await renderAdminOverview();
-  else if (tab === 'quizzes')    await renderAdminQuizzes();
-  else if (tab === 'responses')  await renderAdminResponses();
-  else if (tab === 'students')   await renderAdminStudents();
-  else if (tab === 'resources')  await renderAdminResources();
-  else if (tab === 'payments')   await renderAdminPayments();
-  // aigen tab needs no async data load — it's fully client-side
-}
+// (duplicate adminTab removed — single definition above handles all tabs)
 
 </script>
 </body>
