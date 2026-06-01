@@ -157,6 +157,89 @@
   .csv-import-stats { display:flex;gap:12px;padding:12px 16px;background:var(--bg);border-radius:var(--radius-sm);margin:12px 0;flex-wrap:wrap; }
   .csv-stat { font-size:13px;font-weight:600; }
 
+
+  /* ══════════════════════════════════════════════════════
+     🏆 PRIZE QUIZ — CSS
+  ══════════════════════════════════════════════════════ */
+
+  /* Hero card on student home */
+  .prize-hero {
+    background: linear-gradient(135deg, #1a1814 0%, #2d1f00 50%, #8a4f00 100%);
+    border-radius: var(--radius); padding: 24px 22px; margin-bottom: 20px;
+    color: #fff; position: relative; overflow: hidden; cursor: pointer;
+    box-shadow: 0 8px 32px rgba(198,156,58,.25);
+  }
+  .prize-hero::before {
+    content:''; position:absolute; top:-40px; right:-40px;
+    width:180px; height:180px;
+    background: radial-gradient(circle, rgba(198,156,58,.25) 0%, transparent 70%);
+    border-radius:50%; pointer-events:none;
+  }
+  .prize-hero-label { font-size:10px; font-weight:700; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+  .prize-hero-title { font-family:var(--font-display); font-size:20px; font-weight:700;
+    line-height:1.3; margin-bottom:10px; }
+  .prize-hero-meta  { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .prize-hero-chip  { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2);
+    border-radius:99px; padding:4px 12px; font-size:12px; font-weight:600; }
+  .prize-hero-prizes { display:flex; gap:10px; margin-bottom:16px; }
+  .prize-podium { flex:1; text-align:center; background:rgba(255,255,255,.08);
+    border-radius:10px; padding:10px 6px; border:1px solid rgba(255,255,255,.12); }
+  .prize-podium-medal { font-size:22px; margin-bottom:4px; }
+  .prize-podium-label { font-size:10px; opacity:.7; font-weight:600; letter-spacing:.3px; }
+  .prize-podium-reward { font-size:12px; font-weight:700; color:var(--gold); margin-top:3px;
+    line-height:1.3; }
+  .prize-live-dot { display:inline-flex; align-items:center; gap:6px; }
+  .prize-live-dot::before { content:''; display:inline-block; width:8px; height:8px;
+    border-radius:50%; background:#4ade80; animation:pulse 1.2s infinite; }
+
+  /* Prize quiz card in list */
+  .prize-quiz-card { background:linear-gradient(135deg,#fffdf5,#fff8e1);
+    border:2px solid var(--gold); border-radius:var(--radius); padding:20px 22px;
+    margin-bottom:14px; box-shadow:0 4px 20px rgba(198,156,58,.15); cursor:pointer;
+    transition:all .2s; position:relative; overflow:hidden; }
+  .prize-quiz-card:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(198,156,58,.25); }
+  .prize-corner-ribbon { position:absolute; top:0; right:0; background:var(--gold);
+    color:#fff; font-size:10px; font-weight:700; padding:4px 12px 4px 18px;
+    clip-path:polygon(10px 0,100% 0,100% 100%,0 100%); letter-spacing:.5px; }
+
+  /* Podium leaderboard on result */
+  .podium-wrap { display:flex; align-items:flex-end; justify-content:center;
+    gap:8px; margin:20px 0; }
+  .podium-col { display:flex; flex-direction:column; align-items:center; flex:1; max-width:110px; }
+  .podium-avatar { width:48px; height:48px; border-radius:50%; display:flex;
+    align-items:center; justify-content:center; font-family:var(--font-display);
+    font-size:20px; font-weight:700; color:#fff; margin-bottom:6px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15); }
+  .podium-name  { font-size:12px; font-weight:700; text-align:center;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:90px; }
+  .podium-score { font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .podium-block { border-radius:8px 8px 0 0; width:100%; display:flex;
+    align-items:center; justify-content:center; font-size:22px; }
+  .podium-1 .podium-avatar { background:linear-gradient(135deg,#f59e0b,#d97706); }
+  .podium-2 .podium-avatar { background:linear-gradient(135deg,#94a3b8,#64748b); }
+  .podium-3 .podium-avatar { background:linear-gradient(135deg,#cd7f32,#a0522d); }
+  .podium-1 .podium-block  { background:linear-gradient(180deg,#fef3c7,#fde68a); height:80px; }
+  .podium-2 .podium-block  { background:linear-gradient(180deg,#f1f5f9,#e2e8f0); height:60px; }
+  .podium-3 .podium-block  { background:linear-gradient(180deg,#fdf4ec,#fde8cc); height:48px; }
+
+  /* Winner announcement banner */
+  .winner-banner { background:linear-gradient(135deg,#1a1814,#3d2c00);
+    border-radius:var(--radius); padding:24px; color:#fff; text-align:center;
+    margin-bottom:16px; }
+  .winner-banner h3 { font-family:var(--font-display); font-size:22px;
+    font-weight:700; color:var(--gold); margin-bottom:4px; }
+  .winner-row { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.08);
+    border-radius:10px; padding:10px 14px; margin-top:10px; text-align:left; }
+  .winner-medal { font-size:24px; flex-shrink:0; }
+  .winner-name  { font-weight:700; font-size:14px; }
+  .winner-prize { font-size:12px; color:var(--gold); font-weight:600; margin-top:1px; }
+
+  /* Admin prize quiz creation */
+  .prize-settings-box { background:linear-gradient(135deg,#fffdf5,#fff8e1);
+    border:1.5px solid var(--gold); border-radius:var(--radius); padding:20px;
+    margin-top:12px; }
+
   /* ── Paid / Free Quiz badges ── */
   .quiz-type-free  { display:inline-flex;align-items:center;gap:4px;background:#e8f5e9;color:#2e7d32;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.3px; }
   .quiz-type-paid  { display:inline-flex;align-items:center;gap:4px;background:var(--gold-light);color:#8a6100;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.3px; }
@@ -510,6 +593,7 @@
         <h2 style="font-family:var(--font-display);font-size:22px;font-weight:700" id="greetName">Student</h2>
         <div style="font-size:13px;color:var(--text-muted);margin-top:2px" id="greetDate"></div>
       </div>
+      <div id="prizeHeroBanner" style="display:none"></div>
       <div class="stats-grid fade-in">
         <div class="stat-card">
           <div class="stat-value" id="statAttempted">0</div>
@@ -590,6 +674,26 @@
     </div>
   </div>
 
+  <!-- ── Prize Quiz Page ── -->
+  <div class="page" id="page-prize">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-title lang-text-en">🏆 Prize Quizzes</div>
+          <div class="section-title lang-text-hi hi">🏆 पुरस्कार क्विज़</div>
+          <div class="section-sub lang-text-en">Join, compete & win weekly prizes</div>
+          <div class="section-sub lang-text-hi hi">जुड़ें, प्रतिस्पर्धा करें और पुरस्कार जीतें</div>
+        </div>
+      </div>
+      <div id="prizeQuizListWrap"></div>
+    </div>
+  </div>
+
+  <!-- ── Prize Quiz Detail Page ── -->
+  <div class="page" id="page-prize-detail">
+    <div class="container" id="prizeDetailWrap"></div>
+  </div>
+
   <div class="page" id="page-admin">
     <div class="container-wide">
       <div class="section-header">
@@ -610,6 +714,7 @@
         <button class="admin-nav-btn" onclick="adminTab('responses')">Responses</button>
         <button class="admin-nav-btn" onclick="adminTab('students')">Students</button>
         <button class="admin-nav-btn" onclick="adminTab('payments')">💳 Payments</button>
+        <button class="admin-nav-btn" onclick="adminTab('prizequiz')">🏆 Prize Quiz</button>
         <button class="admin-nav-btn" onclick="adminTab('scheduled')">📅 Scheduled</button>
         <button class="admin-nav-btn" onclick="adminTab('csvimport')">📥 CSV Import</button>
       </div>
@@ -622,6 +727,7 @@
       <div class="admin-section" id="admin-responses"><div id="adminResponses"></div></div>
       <div class="admin-section" id="admin-students"><div id="adminStudents"></div></div>
             <div class="admin-section" id="admin-payments"><div id="adminPaymentsList"></div></div>
+      <div class="admin-section" id="admin-prizequiz"><div id="adminPrizeWrap"></div></div>
       <div class="admin-section" id="admin-scheduled"><div id="adminScheduledWrap"></div></div>
       <div class="admin-section" id="admin-csvimport"><div id="adminCsvWrap"></div></div>
       <div class="admin-section" id="admin-resources">
@@ -1034,6 +1140,118 @@ const DB = {
     };
   },
 
+
+  /* ── Prize Quizzes ──────────────────────────────────── */
+  async savePrizeQuiz(p) {
+    const { error } = await sb.from('prize_quizzes').insert([{
+      id:           p.id,
+      quiz_id:      p.quizId,
+      title:        p.title,
+      description:  p.description || '',
+      entry_fee:    p.entryFee,
+      upi_id:       p.upiId || '',
+      prize_1st:    p.prize1st || '',
+      prize_2nd:    p.prize2nd || '',
+      prize_3rd:    p.prize3rd || '',
+      starts_at:    p.startsAt,
+      ends_at:      p.endsAt,
+      status:       'upcoming',
+      created_at:   new Date().toISOString()
+    }]);
+    if (error) { console.error('savePrizeQuiz:', error.message); return false; }
+    return true;
+  },
+
+  async getPrizeQuizzes() {
+    const { data, error } = await sb
+      .from('prize_quizzes')
+      .select('*')
+      .order('starts_at', { ascending: false });
+    if (error) { console.error('getPrizeQuizzes:', error.message); return []; }
+    return (data || []).map(r => ({
+      id:          r.id,
+      quizId:      r.quiz_id,
+      title:       r.title,
+      description: r.description || '',
+      entryFee:    r.entry_fee,
+      upiId:       r.upi_id || '',
+      prize1st:    r.prize_1st || '',
+      prize2nd:    r.prize_2nd || '',
+      prize3rd:    r.prize_3rd || '',
+      startsAt:    r.starts_at,
+      endsAt:      r.ends_at,
+      status:      r.status,
+      createdAt:   r.created_at
+    }));
+  },
+
+  async updatePrizeQuizStatus(id, status) {
+    const { error } = await sb.from('prize_quizzes').update({ status }).eq('id', id);
+    if (error) { console.error('updatePrizeQuizStatus:', error.message); return false; }
+    return true;
+  },
+
+  async deletePrizeQuiz(id) {
+    const { error } = await sb.from('prize_quizzes').delete().eq('id', id);
+    if (error) { console.error('deletePrizeQuiz:', error.message); return false; }
+    return true;
+  },
+
+  async savePrizeEntry(e) {
+    const { error } = await sb.from('prize_entries').insert([{
+      id:              e.id,
+      prize_quiz_id:   e.prizeQuizId,
+      user_id:         e.userId,
+      user_name:       e.userName,
+      user_email:      e.userEmail,
+      upi_txn_id:      e.upiTxnId,
+      amount:          e.amount,
+      payment_status:  'pending',
+      created_at:      new Date().toISOString()
+    }]);
+    if (error) { console.error('savePrizeEntry:', error.message); return false; }
+    return true;
+  },
+
+  async getPrizeEntries(prizeQuizId) {
+    let q = sb.from('prize_entries').select('*').order('created_at', { ascending: false });
+    if (prizeQuizId) q = q.eq('prize_quiz_id', prizeQuizId);
+    const { data, error } = await q;
+    if (error) { console.error('getPrizeEntries:', error.message); return []; }
+    return data || [];
+  },
+
+  async updateEntryStatus(eid, status) {
+    const { error } = await sb.from('prize_entries').update({ payment_status: status }).eq('id', eid);
+    if (error) { console.error('updateEntryStatus:', error.message); return false; }
+    return true;
+  },
+
+  async getMyPrizeEntries(userId) {
+    const { data, error } = await sb
+      .from('prize_entries')
+      .select('*')
+      .eq('user_id', userId);
+    if (error) return [];
+    return data || [];
+  },
+
+  async getPrizeLeaderboard(quizId) {
+    const { data, error } = await sb
+      .from('attempts')
+      .select('user_id, user_name, correct, score, completed_at')
+      .eq('quiz_id', quizId)
+      .order('correct', { ascending: false })
+      .order('completed_at', { ascending: true }); // tiebreak: faster wins
+    if (error) return [];
+    // one entry per user — best correct count
+    const seen = {};
+    return (data || []).filter(r => {
+      if (seen[r.user_id]) return false;
+      seen[r.user_id] = true; return true;
+    });
+  },
+
   /* ── Payments ────────────────────────────────────────── */
   async savePayment(p) {
     const { error } = await sb.from('payments').insert([{
@@ -1093,7 +1311,9 @@ let state = {
   lang:           'en',
   quizzes:  [],
   attempts: [],
-  unlockedQuizIds: []
+  unlockedQuizIds: [],
+  prizeQuizzes: [],
+  myPrizeEntries: []
 };
 
 // ════════════════════════════════════════════════════════════
@@ -1220,6 +1440,7 @@ function setupBottomNav(role) {
     const svgBook = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`;
     el.innerHTML = `
       <button class="bnav-btn active" id="bn-home" onclick="showPage('student');renderStudentHome()">${svgHome} Home</button>
+      <button class="bnav-btn" id="bn-prize" onclick="showPage('prize');renderPrizePage()">🏆 Prizes</button>
       <button class="bnav-btn" id="bn-resources" onclick="showPage('resources');renderResources()">${svgBook} Revision</button>
       <button class="bnav-btn" id="bn-lb" onclick="showPage('leaderboard');renderLeaderboard()">${svgAward} Ranks</button>
       <button class="bnav-btn" id="bn-profile" onclick="showPage('profile');renderProfile()">${svgUser} Profile</button>`;
@@ -1358,20 +1579,7 @@ async function goHome() {
 // ════════════════════════════════════════════════════════════
 //  STUDENT HOME
 // ════════════════════════════════════════════════════════════
-async function renderStudentHome() {
-  document.getElementById('greetName').textContent = state.user.name || state.user.email;
-  showLoader(t('Loading quizzes…','प्रश्नोत्तरी लोड हो रही है…'));
-  state.quizzes  = await DB.getQuizzes();
-  state.attempts = await DB.getAttempts(state.user.id);
-  state.unlockedQuizIds = await DB.getUnlockedQuizIds(state.user.id);
-  hideLoader();
-
-  document.getElementById('statAttempted').textContent = state.attempts.length;
-  document.getElementById('statAvgScore').textContent = state.attempts.length
-    ? Math.round(state.attempts.reduce((s,a) => s + a.score, 0) / state.attempts.length) + '%'
-    : '—';
-  renderQuizList();
-}
+// renderStudentHome is defined above (Prize Quiz section handles full load)
 
 function filterQuizzes(f) {
   state.quizFilter = f;
@@ -1859,6 +2067,7 @@ async function adminTab(tab) {
   else if (tab==='payments')   await renderAdminPayments();
   else if (tab==='scheduled')  await renderAdminScheduled();
   else if (tab==='csvimport')  renderAdminCsvImport();
+  else if (tab==='prizequiz')  await renderAdminPrizeQuiz();
   // aigen tab: no data load needed
 }
 
@@ -2235,6 +2444,509 @@ async function rejectPayment(pid) {
   hideLoader();
   if (ok) { toast('Payment rejected', 'success'); await renderAdminPayments(); }
   else toast('Update failed', 'error');
+}
+
+
+
+// ════════════════════════════════════════════════════════════
+//  🏆 PRIZE QUIZ — Student Side
+// ════════════════════════════════════════════════════════════
+async function renderStudentHome() {
+  showLoader(t('Loading quizzes…','क्विज़ लोड हो रही हैं…'));
+  const [quizzes, attempts, unlockedIds, prizeQuizzes, myEntries] = await Promise.all([
+    DB.getQuizzes(), DB.getAttempts(state.user.id),
+    DB.getUnlockedQuizIds(state.user.id),
+    DB.getPrizeQuizzes(),
+    DB.getMyPrizeEntries(state.user.id)
+  ]);
+  state.quizzes        = quizzes;
+  state.attempts       = attempts;
+  state.unlockedQuizIds= unlockedIds;
+  state.prizeQuizzes   = prizeQuizzes;
+  state.myPrizeEntries = myEntries;
+  hideLoader();
+
+  const hi = state.lang === 'hi';
+  document.getElementById('greetName').textContent = (state.user.name || state.user.email || 'Student').split(' ')[0];
+  document.getElementById('statAttempted').textContent = attempts.length;
+  document.getElementById('statAvgScore').textContent  = attempts.length
+    ? Math.round(attempts.reduce((s,a)=>s+a.score,0)/attempts.length)+'%' : '—';
+
+  // ── Prize quiz hero banner (show most relevant one) ──────────────────
+  const now   = new Date();
+  const live  = prizeQuizzes.find(p => p.status==='live' || (new Date(p.startsAt)<=now && new Date(p.endsAt)>=now));
+  const upcoming = prizeQuizzes.find(p => p.status==='upcoming' && new Date(p.startsAt)>now);
+  const featured = live || upcoming;
+
+  const heroEl = document.getElementById('prizeHeroBanner');
+  if (featured && heroEl) {
+    const isLive    = !!(live && featured===live);
+    const startDate = new Date(featured.startsAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    const endDate   = new Date(featured.endsAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    heroEl.style.display = 'block';
+    heroEl.innerHTML = `
+      <div class="prize-hero fade-in" onclick="showPage('prize');renderPrizePage()">
+        <div class="prize-hero-label">${isLive ? '<span class="prize-live-dot">LIVE NOW</span>' : '⏰ UPCOMING THIS WEEK'}</div>
+        <div class="prize-hero-title">${featured.title}</div>
+        <div class="prize-hero-meta">
+          <span class="prize-hero-chip">💰 ₹${featured.entryFee} Entry</span>
+          <span class="prize-hero-chip">${isLive ? '🔴 Ends '+endDate : '📅 Starts '+startDate}</span>
+        </div>
+        <div class="prize-hero-prizes">
+          <div class="prize-podium"><div class="prize-podium-medal">🥇</div><div class="prize-podium-label">1ST PRIZE</div><div class="prize-podium-reward">${featured.prize1st||'TBA'}</div></div>
+          <div class="prize-podium"><div class="prize-podium-medal">🥈</div><div class="prize-podium-label">2ND PRIZE</div><div class="prize-podium-reward">${featured.prize2nd||'TBA'}</div></div>
+          <div class="prize-podium"><div class="prize-podium-medal">🥉</div><div class="prize-podium-label">3RD PRIZE</div><div class="prize-podium-reward">${featured.prize3rd||'TBA'}</div></div>
+        </div>
+        <button class="btn btn-full" style="background:var(--gold);color:#fff;font-weight:700">
+          ${isLive ? '🏆 Join & Compete Now →' : '🔔 View Details →'}
+        </button>
+      </div>`;
+  } else if (heroEl) {
+    heroEl.style.display = 'none';
+  }
+
+  renderQuizList();
+}
+
+async function renderPrizePage() {
+  showLoader(t('Loading prize quizzes…','पुरस्कार क्विज़ लोड हो रही हैं…'));
+  const [pqs, myEntries] = await Promise.all([
+    DB.getPrizeQuizzes(), DB.getMyPrizeEntries(state.user.id)
+  ]);
+  state.prizeQuizzes   = pqs;
+  state.myPrizeEntries = myEntries;
+  hideLoader();
+
+  const now = new Date();
+  const wrap = document.getElementById('prizeQuizListWrap');
+
+  if (!pqs.length) {
+    wrap.innerHTML = `<div class="empty-state"><h3>No prize quizzes yet</h3><p>Check back soon — weekly prize quizzes will appear here.</p></div>`;
+    return;
+  }
+
+  wrap.innerHTML = pqs.map(p => {
+    const isLive    = p.status==='live' || (new Date(p.startsAt)<=now && new Date(p.endsAt)>=now);
+    const isEnded   = p.status==='ended' || new Date(p.endsAt)<now;
+    const myEntry   = myEntries.find(e => e.prize_quiz_id===p.id);
+    const verified  = myEntry && myEntry.payment_status==='verified';
+    const pending   = myEntry && myEntry.payment_status==='pending';
+    const startStr  = new Date(p.startsAt).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    const endStr    = new Date(p.endsAt).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+
+    return `
+    <div class="prize-quiz-card fade-in" onclick="openPrizeDetail('${p.id}')">
+      <div class="prize-corner-ribbon">${isLive?'🔴 LIVE':isEnded?'ENDED':'UPCOMING'}</div>
+      <div style="font-size:12px;color:var(--gold);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">🏆 Weekly Prize Quiz</div>
+      <div style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:8px">${p.title}</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">${p.description}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <span class="badge badge-gold">💰 ₹${p.entryFee} Entry Fee</span>
+        ${isLive?'<span class="badge" style="background:#d1fae5;color:#065f46">🔴 Live Now</span>':''}
+        ${isEnded?'<span class="badge badge-gray">Ended</span>':''}
+        ${verified?'<span class="badge badge-green">✅ You\'re In</span>':''}
+        ${pending?'<span class="badge badge-gold">⏳ Payment Pending</span>':''}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+        <div style="text-align:center;background:#fffbea;border:1px solid #fde68a;border-radius:10px;padding:10px 6px">
+          <div style="font-size:18px">🥇</div>
+          <div style="font-size:11px;color:var(--text-muted);font-weight:600">1ST</div>
+          <div style="font-size:12px;font-weight:700;color:#92400e;margin-top:2px">${p.prize1st||'TBA'}</div>
+        </div>
+        <div style="text-align:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 6px">
+          <div style="font-size:18px">🥈</div>
+          <div style="font-size:11px;color:var(--text-muted);font-weight:600">2ND</div>
+          <div style="font-size:12px;font-weight:700;color:#475569;margin-top:2px">${p.prize2nd||'TBA'}</div>
+        </div>
+        <div style="text-align:center;background:#fdf4ec;border:1px solid #fde8cc;border-radius:10px;padding:10px 6px">
+          <div style="font-size:18px">🥉</div>
+          <div style="font-size:11px;color:var(--text-muted);font-weight:600">3RD</div>
+          <div style="font-size:12px;font-weight:700;color:#92400e;margin-top:2px">${p.prize3rd||'TBA'}</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">
+        📅 ${startStr} → ${endStr}
+      </div>
+      ${!isEnded && !verified && !pending
+        ? `<button class="btn btn-full" style="background:var(--gold);color:#fff;font-weight:700" onclick="event.stopPropagation();openPrizeEntry('${p.id}')">💰 Pay ₹${p.entryFee} & Join</button>`
+        : verified && isLive
+          ? `<button class="btn btn-primary btn-full" onclick="event.stopPropagation();startPrizeQuiz('${p.id}')">🏆 Start Quiz Now</button>`
+          : isEnded
+            ? `<button class="btn btn-outline btn-full" onclick="event.stopPropagation();openPrizeDetail('${p.id}')">🏅 View Results</button>`
+            : ''
+      }
+    </div>`;
+  }).join('');
+}
+
+function openPrizeDetail(pid) {
+  showPage('prize-detail');
+  renderPrizeDetail(pid);
+}
+
+async function renderPrizeDetail(pid) {
+  const p       = state.prizeQuizzes.find(x=>x.id===pid) || (await DB.getPrizeQuizzes()).find(x=>x.id===pid);
+  if (!p) return;
+  const now     = new Date();
+  const isLive  = p.status==='live' || (new Date(p.startsAt)<=now && new Date(p.endsAt)>=now);
+  const isEnded = p.status==='ended' || new Date(p.endsAt)<now;
+  const myEntries = state.myPrizeEntries.length ? state.myPrizeEntries : await DB.getMyPrizeEntries(state.user.id);
+  const myEntry   = myEntries.find(e=>e.prize_quiz_id===pid);
+  const verified  = myEntry && myEntry.payment_status==='verified';
+
+  let lbHtml = '';
+  if (isEnded || isLive) {
+    const lb = await DB.getPrizeLeaderboard(p.quizId);
+    if (lb.length) {
+      const medals = ['🥇','🥈','🥉'];
+      // Podium
+      const top3 = lb.slice(0,3);
+      lbHtml = `
+        <div class="card fade-in" style="margin-bottom:16px">
+          <div class="card-body" style="padding:20px">
+            <div style="font-family:var(--font-display);font-size:17px;font-weight:700;margin-bottom:16px;color:var(--accent)">
+              ${isEnded ? '🏆 Final Results' : '📊 Live Leaderboard'}
+            </div>
+            ${isEnded ? `
+            <div class="winner-banner">
+              <h3>🎉 Winners Announced!</h3>
+              <p style="font-size:13px;opacity:.8;margin-top:4px">Congratulations to our top performers</p>
+              ${top3.map((u,i) => `
+              <div class="winner-row">
+                <div class="winner-medal">${medals[i]||'🎖️'}</div>
+                <div>
+                  <div class="winner-name">${u.user_name||'Student'}</div>
+                  <div class="winner-prize">${[p.prize1st,p.prize2nd,p.prize3rd][i]||'Prize'} · ${u.correct} correct</div>
+                </div>
+              </div>`).join('')}
+            </div>` : ''}
+            <div class="podium-wrap">
+              ${[lb[1],lb[0],lb[2]].map((u,pi)=>{
+                if(!u) return '<div class="podium-col" style="flex:1"></div>';
+                const realRank = pi===0?2:pi===1?1:3;
+                const initials = (u.user_name||'?').charAt(0).toUpperCase();
+                const h = pi===1?80:pi===0?60:48;
+                const colors = ['#94a3b8','#f59e0b','#cd7f32'];
+                return `<div class="podium-col">
+                  <div class="podium-avatar" style="background:linear-gradient(135deg,${colors[pi]},${colors[pi]}cc)">${initials}</div>
+                  <div class="podium-name">${(u.user_name||'Student').split(' ')[0]}</div>
+                  <div class="podium-score">${u.correct} correct</div>
+                  <div class="podium-block" style="height:${h}px;background:${pi===1?'linear-gradient(180deg,#fef3c7,#fde68a)':pi===0?'linear-gradient(180deg,#f1f5f9,#e2e8f0)':'linear-gradient(180deg,#fdf4ec,#fde8cc)'};border-radius:8px 8px 0 0;margin-top:8px">${medals[realRank-1]}</div>
+                </div>`;
+              }).join('')}
+            </div>
+            <div class="table-wrap" style="margin-top:16px"><table>
+              <thead><tr><th>#</th><th>Student</th><th>Correct</th><th>Score</th></tr></thead>
+              <tbody>${lb.map((u,i)=>`<tr style="${u.user_id===state.user.id?'background:var(--accent-light);font-weight:700':''}">
+                <td>${medals[i]||i+1}</td>
+                <td>${u.user_name||'—'}${u.user_id===state.user.id?' (You)':''}</td>
+                <td style="font-weight:700;color:var(--accent)">${u.correct}</td>
+                <td><span class="badge ${u.score>=80?'badge-green':u.score>=50?'badge-gold':'badge-red'}">${u.score}%</span></td>
+              </tr>`).join('')}</tbody>
+            </table></div>
+          </div>
+        </div>`;
+    }
+  }
+
+  document.getElementById('prizeDetailWrap').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <button class="btn btn-ghost btn-sm" onclick="showPage('prize');renderPrizePage()">← Back</button>
+      <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--accent)">${p.title}</div>
+    </div>
+    ${lbHtml}
+    ${!isEnded && !verified ? `
+    <div class="card fade-in">
+      <div class="card-body" style="text-align:center;padding:28px 24px">
+        <div style="font-size:32px;margin-bottom:12px">🏆</div>
+        <div style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:6px">Join This Prize Quiz</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">${p.description}</div>
+        <button class="btn btn-full btn-lg" style="background:var(--gold);color:#fff;font-weight:700" onclick="openPrizeEntry('${p.id}')">💰 Pay ₹${p.entryFee} & Enter</button>
+      </div>
+    </div>` : ''}
+    ${verified && isLive ? `
+    <div class="card fade-in">
+      <div class="card-body" style="text-align:center;padding:28px 24px">
+        <div style="font-size:32px;margin-bottom:10px">✅</div>
+        <div style="font-weight:700;margin-bottom:6px">You're registered!</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Your payment is verified. Good luck!</div>
+        <button class="btn btn-primary btn-full btn-lg" onclick="startPrizeQuiz('${p.id}')">🚀 Start Quiz Now</button>
+      </div>
+    </div>` : ''}`;
+}
+
+function openPrizeEntry(pid) {
+  const p = state.prizeQuizzes.find(x=>x.id===pid);
+  if (!p) return;
+  const upiLink = 'upi://pay?pa='+encodeURIComponent(p.upiId)+'&pn=GyankunJ+Academy&am='+p.entryFee+'&cu=INR&tn='+encodeURIComponent('Prize Quiz: '+p.title);
+  const qrUrl   = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(upiLink);
+
+  const html = `
+    <div class="upi-modal-wrap">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">${p.title}</div>
+      <div class="upi-price-tag">₹${p.entryFee} Entry Fee</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px">One-time · Non-refundable</div>
+      <div class="upi-qr-box">
+        <img style="width:180px;height:180px;border-radius:10px;border:3px solid var(--surface);box-shadow:var(--shadow-lg)" src="${qrUrl}" alt="UPI QR"/>
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600">Scan with any UPI app</div>
+        <div class="upi-id-chip" onclick="navigator.clipboard.writeText('${p.upiId}');toast('UPI ID copied!','success')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          ${p.upiId}
+        </div>
+      </div>
+      <a href="${upiLink}" class="btn btn-full" style="background:var(--gold);color:#fff;font-weight:700;margin-bottom:14px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px">
+        📱 Open UPI App · Pay ₹${p.entryFee}
+      </a>
+      <div class="form-group" style="margin-top:4px">
+        <label class="form-label">Enter UPI Transaction ID after payment</label>
+        <input class="form-control" id="prizeUpiTxn" placeholder="12-digit transaction ID" maxlength="30"/>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:5px">Found in your payment confirmation SMS or app receipt</div>
+      </div>
+    </div>`;
+
+  openGenericModal('🏆 Join Prize Quiz', html,
+    "submitPrizeEntry('"+pid+"')",
+    '✅ Submit Payment & Register');
+}
+
+async function submitPrizeEntry(pid) {
+  const txnId = ((document.getElementById('prizeUpiTxn')||{}).value||'').trim();
+  if (!txnId || txnId.length < 6) { toast('Enter a valid Transaction ID','error'); return; }
+  const p = state.prizeQuizzes.find(x=>x.id===pid);
+  if (!p) return;
+
+  showLoader('Submitting entry…');
+  const ok = await DB.savePrizeEntry({
+    id:          'pe_'+Date.now(),
+    prizeQuizId: pid,
+    userId:      state.user.id,
+    userName:    state.user.name || state.user.email,
+    userEmail:   state.user.email,
+    upiTxnId:    txnId,
+    amount:      p.entryFee
+  });
+  hideLoader();
+  if (ok) {
+    closeModal('generic');
+    toast('✅ Entry submitted! Admin will verify your payment shortly.','success');
+    state.myPrizeEntries = await DB.getMyPrizeEntries(state.user.id);
+    renderPrizePage();
+  } else {
+    toast('Submit failed — try again','error');
+  }
+}
+
+async function startPrizeQuiz(pid) {
+  const p = state.prizeQuizzes.find(x=>x.id===pid);
+  if (!p) return;
+  const quiz = state.quizzes.find(q=>q.id===p.quizId) || (await DB.getQuizzes()).find(q=>q.id===p.quizId);
+  if (!quiz) { toast('Quiz not found','error'); return; }
+  startQuiz(quiz);
+}
+
+// ════════════════════════════════════════════════════════════
+//  🏆 PRIZE QUIZ — Admin Side
+// ════════════════════════════════════════════════════════════
+async function renderAdminPrizeQuiz() {
+  showLoader('Loading prize quizzes…');
+  const [pqs, quizzes] = await Promise.all([DB.getPrizeQuizzes(), DB.getQuizzes()]);
+  state.prizeQuizzes = pqs;
+  hideLoader();
+
+  const qOptions = quizzes.map(q=>`<option value="${q.id}">${q.title}</option>`).join('');
+
+  let html = `
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-body">
+        <h3 style="font-family:var(--font-display);margin-bottom:6px">Create Prize Quiz</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Set up a weekly competitive quiz with UPI entry fee and prizes for top 3 students.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Prize Quiz Title</label>
+            <input class="form-control" id="pqTitle" placeholder="e.g. Weekly UPSC Challenge — Week 12"/>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" id="pqDesc" rows="2" placeholder="Brief description for students…"></textarea>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Link to Quiz</label>
+            <select class="form-control" id="pqQuizId">${qOptions}</select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Entry Fee (₹)</label>
+            <input class="form-control" id="pqFee" type="number" value="29" min="1"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your UPI ID</label>
+            <input class="form-control" id="pqUpi" placeholder="yourname@upi" value="7000970922@nyes"/>
+          </div>
+        </div>
+        <div class="prize-settings-box">
+          <div style="font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px">🏆 Prize Configuration</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">🥇 1st Prize</label>
+              <input class="form-control" id="pqP1" placeholder="e.g. ₹500 Cash"/>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">🥈 2nd Prize</label>
+              <input class="form-control" id="pqP2" placeholder="e.g. ₹300 Cash"/>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">🥉 3rd Prize</label>
+              <input class="form-control" id="pqP3" placeholder="e.g. ₹200 Cash"/>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:10px">💡 Prizes can be cash (UPI transfer), certificates, books, or any reward you decide.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
+          <div class="form-group">
+            <label class="form-label">Start Date & Time</label>
+            <input class="form-control" id="pqStart" type="datetime-local"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Date & Time</label>
+            <input class="form-control" id="pqEnd" type="datetime-local"/>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" style="margin-top:4px;background:var(--gold)" onclick="saveAdminPrizeQuiz()">
+          🏆 Create Prize Quiz
+        </button>
+      </div>
+    </div>`;
+
+  // Existing prize quizzes
+  if (pqs.length) {
+    html += '<div class="section-header"><div class="section-title" style="font-size:17px">Active Prize Quizzes</div></div>';
+    for (const p of pqs) {
+      const entries = await DB.getPrizeEntries(p.id);
+      const verified = entries.filter(e=>e.payment_status==='verified').length;
+      const pending  = entries.filter(e=>e.payment_status==='pending').length;
+      const revenue  = entries.filter(e=>e.payment_status==='verified').reduce((s,e)=>s+(e.amount||0),0);
+      const now = new Date();
+      const isLive = p.status==='live'||(new Date(p.startsAt)<=now&&new Date(p.endsAt)>=now);
+
+      html += `
+        <div class="card fade-in" style="margin-bottom:16px">
+          <div class="card-body" style="padding:20px 22px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px">
+              <div>
+                <div style="font-family:var(--font-display);font-size:17px;font-weight:700">${p.title}</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:3px">
+                  💰 ₹${p.entryFee} entry · 🏆 ${p.prize1st} / ${p.prize2nd} / ${p.prize3rd}
+                </div>
+              </div>
+              <span class="badge ${p.status==='ended'?'badge-gray':isLive?'badge-green':'badge-gold'}">${p.status==='ended'?'Ended':isLive?'🔴 Live':'Upcoming'}</span>
+            </div>
+            <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+              <div class="stat-card" style="padding:12px"><div class="stat-value" style="font-size:22px">${verified}</div><div class="stat-label">Verified</div></div>
+              <div class="stat-card" style="padding:12px"><div class="stat-value" style="font-size:22px;color:var(--saffron)">${pending}</div><div class="stat-label">Pending</div></div>
+              <div class="stat-card" style="padding:12px"><div class="stat-value" style="font-size:22px;color:var(--gold)">₹${revenue}</div><div class="stat-label">Collected</div></div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              ${p.status!=='ended' ? `<button class="btn btn-outline btn-sm" onclick="togglePrizeStatus('${p.id}','${isLive?'ended':'live'}')">${isLive?'🏁 End Quiz':'🔴 Go Live'}</button>` : ''}
+              <button class="btn btn-outline btn-sm" onclick="viewPrizeEntries('${p.id}')">👥 View Entries (${entries.length})</button>
+              <button class="btn btn-danger btn-sm" onclick="deletePrizeQuiz('${p.id}')">Delete</button>
+            </div>
+            <div id="entriesPanel_${p.id}" style="display:none;margin-top:16px"></div>
+          </div>
+        </div>`;
+    }
+  }
+
+  document.getElementById('adminPrizeWrap').innerHTML = html;
+}
+
+async function saveAdminPrizeQuiz() {
+  const title = ((document.getElementById('pqTitle')||{}).value||'').trim();
+  const desc  = ((document.getElementById('pqDesc')||{}).value||'').trim();
+  const quizId= (document.getElementById('pqQuizId')||{value:''}).value;
+  const fee   = parseInt((document.getElementById('pqFee')||{value:'29'}).value)||29;
+  const upi   = ((document.getElementById('pqUpi')||{}).value||'').trim();
+  const p1    = ((document.getElementById('pqP1')||{}).value||'').trim();
+  const p2    = ((document.getElementById('pqP2')||{}).value||'').trim();
+  const p3    = ((document.getElementById('pqP3')||{}).value||'').trim();
+  const start = (document.getElementById('pqStart')||{value:''}).value;
+  const end   = (document.getElementById('pqEnd')||{value:''}).value;
+
+  if (!title)  { toast('Enter a title','error'); return; }
+  if (!quizId) { toast('Select a quiz','error'); return; }
+  if (!p1)     { toast('Enter at least 1st prize','error'); return; }
+  if (!start || !end) { toast('Set start and end dates','error'); return; }
+  if (new Date(end) <= new Date(start)) { toast('End must be after start','error'); return; }
+
+  showLoader('Creating prize quiz…');
+  const ok = await DB.savePrizeQuiz({
+    id:'pq_'+Date.now(), quizId, title, description:desc,
+    entryFee:fee, upiId:upi,
+    prize1st:p1, prize2nd:p2, prize3rd:p3,
+    startsAt:new Date(start).toISOString(), endsAt:new Date(end).toISOString()
+  });
+  hideLoader();
+  if (ok) { toast('🏆 Prize quiz created!','success'); await renderAdminPrizeQuiz(); }
+  else toast('Failed to create','error');
+}
+
+async function togglePrizeStatus(pid, status) {
+  if (status==='ended' && !confirm('End this prize quiz? Winners will be visible to all students.')) return;
+  showLoader('Updating…');
+  await DB.updatePrizeQuizStatus(pid, status);
+  hideLoader();
+  toast(status==='live'?'🔴 Prize quiz is now Live!':'🏁 Prize quiz ended — winners announced!','success');
+  await renderAdminPrizeQuiz();
+}
+
+async function deletePrizeQuiz(pid) {
+  if (!confirm('Delete this prize quiz permanently?')) return;
+  showLoader('Deleting…');
+  await DB.deletePrizeQuiz(pid);
+  hideLoader();
+  toast('Deleted','success');
+  await renderAdminPrizeQuiz();
+}
+
+async function viewPrizeEntries(pid) {
+  const panel = document.getElementById('entriesPanel_'+pid);
+  if (!panel) return;
+  if (panel.style.display==='block') { panel.style.display='none'; return; }
+  panel.style.display = 'block';
+  panel.innerHTML = '<div style="color:var(--text-muted);font-size:13px">Loading…</div>';
+  const entries = await DB.getPrizeEntries(pid);
+  if (!entries.length) { panel.innerHTML='<div style="font-size:13px;color:var(--text-muted)">No entries yet.</div>'; return; }
+
+  panel.innerHTML = `
+    <div style="font-weight:700;margin-bottom:10px;font-size:14px">Entries (${entries.length})</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Student</th><th>TXN ID</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>${entries.map(e=>`<tr class="${e.payment_status==='verified'?'payment-row-verified':e.payment_status==='rejected'?'payment-row-rejected':'payment-row-pending'}">
+        <td><strong>${e.user_name||'—'}</strong><br><span style="font-size:11px;color:var(--text-muted)">${e.user_email||''}</span></td>
+        <td><code style="font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px">${e.upi_txn_id||'—'}</code></td>
+        <td style="font-weight:700;color:var(--gold)">₹${e.amount||0}</td>
+        <td>${e.payment_status==='verified'?'<span class="badge badge-green">✅ Verified</span>':e.payment_status==='rejected'?'<span class="badge badge-red">❌ Rejected</span>':'<span class="badge badge-gold">⏳ Pending</span>'}</td>
+        <td>${e.payment_status==='pending'?`
+          <button class="btn btn-primary btn-sm" style="font-size:11px;padding:4px 8px" onclick="verifyPrizeEntry('${e.id}','${pid}')">✅</button>
+          <button class="btn btn-danger btn-sm" style="font-size:11px;padding:4px 8px;margin-top:2px" onclick="rejectPrizeEntry('${e.id}','${pid}')">❌</button>
+        `:'—'}</td>
+      </tr>`).join('')}
+      </tbody>
+    </table></div>`;
+}
+
+async function verifyPrizeEntry(eid, pid) {
+  showLoader('Verifying…');
+  await DB.updateEntryStatus(eid,'verified');
+  hideLoader();
+  toast('Entry verified ✅ — student can now attempt the quiz','success');
+  viewPrizeEntries(pid);
+}
+
+async function rejectPrizeEntry(eid, pid) {
+  showLoader('Rejecting…');
+  await DB.updateEntryStatus(eid,'rejected');
+  hideLoader();
+  toast('Entry rejected','success');
+  viewPrizeEntries(pid);
 }
 
 
