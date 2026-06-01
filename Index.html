@@ -496,6 +496,106 @@
     .ai-review-opts { grid-template-columns: 1fr; }
   }
 
+
+  /* ── 4-Section Category Tabs ── */
+  .section-tabs { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:20px; scrollbar-width:none; }
+  .section-tabs::-webkit-scrollbar { display:none; }
+  .section-tab { display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 18px; border-radius:var(--radius-sm); border:1.5px solid var(--border); background:var(--surface); cursor:pointer; white-space:nowrap; font-size:12px; font-weight:700; color:var(--text-muted); transition:all .2s; flex-shrink:0; }
+  .section-tab .tab-icon { font-size:22px; }
+  .section-tab.active { border-color:var(--accent); background:var(--accent-light); color:var(--accent); box-shadow:0 4px 12px rgba(17,63,43,.1); }
+  .section-tab:hover:not(.active) { border-color:var(--border-dark); color:var(--text); }
+
+  /* Subject colour coding */
+  .section-tab.math.active   { border-color:#2b4fa0; background:#eef2fb; color:#2b4fa0; }
+  .section-tab.reasoning.active { border-color:#6b3fa0; background:#f5f0fb; color:#6b3fa0; }
+  .section-tab.gs.active     { border-color:#113f2b; background:#edf5f0; color:#113f2b; }
+  .section-tab.ca.active     { border-color:#c69c3a; background:#fef9ec; color:#c69c3a; }
+
+  .sec-math      { background:#eef2fb; color:#2b4fa0; }
+  .sec-reasoning { background:#f5f0fb; color:#6b3fa0; }
+  .sec-gs        { background:#edf5f0; color:#113f2b; }
+  .sec-ca        { background:#fef9ec; color:#c69c3a; }
+  .sec-all       { background:var(--border); color:var(--text-muted); }
+
+  /* ── Streak Card ── */
+  .streak-card { background:linear-gradient(135deg,#1a1814,#2d1a00); border-radius:var(--radius); padding:20px 22px; color:#fff; display:flex; align-items:center; gap:18px; margin-bottom:16px; box-shadow:0 8px 24px rgba(0,0,0,.15); }
+  .streak-flame { font-size:44px; line-height:1; flex-shrink:0; filter:drop-shadow(0 2px 6px rgba(255,120,0,.5)); }
+  .streak-info { flex:1; }
+  .streak-num { font-family:var(--font-display); font-size:36px; font-weight:700; color:#ffd700; line-height:1; }
+  .streak-label { font-size:12px; opacity:.7; margin-top:2px; text-transform:uppercase; letter-spacing:.8px; }
+  .streak-sub { font-size:13px; opacity:.85; margin-top:6px; }
+  .streak-dots { display:flex; gap:5px; margin-top:10px; }
+  .streak-dot { width:28px; height:8px; border-radius:99px; background:rgba(255,255,255,.2); }
+  .streak-dot.active { background:#ffd700; }
+  .streak-dot.today  { background:#4ade80; animation:pulse 1.2s infinite; }
+
+  /* ── Percentile Badge ── */
+  .percentile-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; display:flex; align-items:center; gap:16px; box-shadow:var(--shadow); }
+  .percentile-ring { position:relative; width:72px; height:72px; flex-shrink:0; }
+  .percentile-ring svg { transform:rotate(-90deg); }
+  .percentile-ring-val { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:17px; font-weight:700; color:var(--accent); }
+  .percentile-info h4 { font-size:15px; font-weight:700; margin-bottom:3px; }
+  .percentile-info p { font-size:13px; color:var(--text-muted); line-height:1.5; }
+
+  /* ── Analysis Dashboard ── */
+  .analysis-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:20px; }
+  .analysis-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); }
+  .analysis-card h4 { font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px; }
+
+  /* Bar chart */
+  .bar-chart { display:flex; flex-direction:column; gap:8px; }
+  .bar-row { display:flex; align-items:center; gap:10px; }
+  .bar-label { font-size:12px; font-weight:600; color:var(--text-muted); width:72px; flex-shrink:0; text-align:right; }
+  .bar-track { flex:1; background:var(--bg); border-radius:99px; height:10px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:99px; transition:width .6s cubic-bezier(.4,0,.2,1); }
+  .bar-val { font-size:12px; font-weight:700; color:var(--text); width:36px; text-align:right; flex-shrink:0; }
+
+  /* Accuracy donut */
+  .accuracy-wrap { display:flex; align-items:center; gap:16px; }
+  .accuracy-donut { position:relative; width:80px; height:80px; flex-shrink:0; }
+  .accuracy-donut svg { transform:rotate(-90deg); }
+  .accuracy-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1; }
+  .accuracy-val span:first-child { font-family:var(--font-display); font-size:18px; font-weight:700; color:var(--accent); }
+  .accuracy-val span:last-child { font-size:10px; color:var(--text-muted); }
+  .accuracy-legend { flex:1; display:flex; flex-direction:column; gap:6px; }
+  .acc-leg-row { display:flex; align-items:center; gap:8px; font-size:12px; }
+  .acc-leg-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+  /* Weekly trend */
+  .trend-bars { display:flex; align-items:flex-end; gap:5px; height:60px; }
+  .trend-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .trend-bar { width:100%; border-radius:4px 4px 0 0; background:var(--accent-light); transition:height .4s; min-height:4px; }
+  .trend-bar.today-bar { background:var(--accent); }
+  .trend-day { font-size:10px; color:var(--text-muted); font-weight:600; }
+
+  /* Section-wise performance */
+  .section-perf-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+  .section-perf-row:last-child { border-bottom:none; }
+  .section-perf-icon { font-size:20px; width:32px; text-align:center; flex-shrink:0; }
+  .section-perf-name { flex:1; font-size:13px; font-weight:700; }
+  .section-perf-bar { width:80px; height:8px; background:var(--bg); border-radius:99px; overflow:hidden; }
+  .section-perf-fill { height:100%; border-radius:99px; }
+  .section-perf-score { font-size:13px; font-weight:700; min-width:36px; text-align:right; }
+
+  /* ── Resources 4-Section ── */
+  .res-section-block { margin-bottom:28px; }
+  .res-section-header { display:flex; align-items:center; gap:10px; padding:14px 18px; border-radius:var(--radius-sm); margin-bottom:12px; }
+  .res-section-icon { font-size:24px; }
+  .res-section-title { font-size:16px; font-weight:700; }
+  .res-section-count { font-size:12px; opacity:.7; margin-left:auto; }
+  .res-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px 18px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all .2s; box-shadow:var(--shadow); }
+  .res-card:hover { border-color:var(--accent); transform:translateY(-1px); box-shadow:0 6px 20px rgba(17,63,43,.08); }
+  .res-card-icon { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .res-card-info { flex:1; min-width:0; }
+  .res-card-title { font-size:14px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .res-card-meta { font-size:12px; color:var(--text-muted); margin-top:2px; }
+  .res-download-btn { display:flex; align-items:center; gap:5px; padding:7px 14px; border-radius:var(--radius-sm); font-size:13px; font-weight:700; border:none; cursor:pointer; flex-shrink:0; transition:all .2s; }
+  .res-download-btn:hover { transform:translateY(-1px); }
+
+  /* Admin resource upload form */
+  .res-upload-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media(max-width:600px) { .res-upload-grid { grid-template-columns:1fr; } .analysis-grid { grid-template-columns:1fr; } }
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -594,7 +694,10 @@
         <div style="font-size:13px;color:var(--text-muted);margin-top:2px" id="greetDate"></div>
       </div>
       <div id="prizeHeroBanner" style="display:none"></div>
-      <div class="stats-grid fade-in">
+      <!-- Streak Card -->
+      <div id="streakCard" class="fade-in" style="display:none"></div>
+
+      <div class="stats-grid fade-in" style="grid-template-columns:repeat(2,1fr)">
         <div class="stat-card">
           <div class="stat-value" id="statAttempted">0</div>
           <div class="stat-label lang-text-en">Quizzes Taken</div>
@@ -606,6 +709,29 @@
           <div class="stat-label lang-text-hi hi">औसत स्कोर</div>
         </div>
       </div>
+
+      <!-- Percentile Card -->
+      <div id="percentileCard" class="fade-in" style="margin-bottom:16px;display:none"></div>
+
+      <!-- Section Tabs -->
+      <div class="section-tabs fade-in" id="quizSectionTabs">
+        <div class="section-tab active" data-section="all" onclick="filterSection('all')">
+          <span class="tab-icon">📚</span><span>All</span>
+        </div>
+        <div class="section-tab math" data-section="Maths" onclick="filterSection('Maths')">
+          <span class="tab-icon">🔢</span><span>Maths</span>
+        </div>
+        <div class="section-tab reasoning" data-section="Reasoning" onclick="filterSection('Reasoning')">
+          <span class="tab-icon">🧠</span><span>Reasoning</span>
+        </div>
+        <div class="section-tab gs" data-section="GS" onclick="filterSection('GS')">
+          <span class="tab-icon">🌏</span><span>GS</span>
+        </div>
+        <div class="section-tab ca" data-section="CA" onclick="filterSection('CA')">
+          <span class="tab-icon">📰</span><span>Curr. Affairs</span>
+        </div>
+      </div>
+
       <div style="display:flex;gap:8px;margin-bottom:18px" class="fade-in">
         <button class="btn btn-primary btn-sm" id="tab-available" onclick="filterQuizzes('available')">
           <span class="lang-text-en">Available</span><span class="lang-text-hi hi">उपलब्ध</span>
@@ -648,19 +774,20 @@
     <div class="container">
       <div class="section-header">
         <div>
-          <div class="section-title lang-text-en">Revision Materials</div>
-          <div class="section-title lang-text-hi hi">रिवीजन सामग्री</div>
-          <div class="section-sub lang-text-en">Download PDFs and notes</div>
-          <div class="section-sub lang-text-hi hi">पीडीएफ और नोट्स डाउनलोड करें</div>
+          <div class="section-title lang-text-en">📖 Study Materials</div>
+          <div class="section-title lang-text-hi hi">📖 अध्ययन सामग्री</div>
+          <div class="section-sub lang-text-en">Notes, PDFs &amp; reference material by subject</div>
+          <div class="section-sub lang-text-hi hi">विषयवार नोट्स, पीडीएफ और संदर्भ सामग्री</div>
         </div>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px">
-        <button class="btn btn-primary btn-sm" onclick="filterResources('All')">All</button>
-        <button class="btn btn-outline btn-sm" onclick="filterResources('UPSC')">UPSC</button>
-        <button class="btn btn-outline btn-sm" onclick="filterResources('MPPSC')">MPPSC</button>
-        <button class="btn btn-outline btn-sm" onclick="filterResources('SSC')">SSC</button>
+      <div class="section-tabs" id="resSectionTabs">
+        <div class="section-tab active" data-rs="all" onclick="filterResourceSection('all')"><span class="tab-icon">📚</span><span>All</span></div>
+        <div class="section-tab math" data-rs="Maths" onclick="filterResourceSection('Maths')"><span class="tab-icon">🔢</span><span>Maths</span></div>
+        <div class="section-tab reasoning" data-rs="Reasoning" onclick="filterResourceSection('Reasoning')"><span class="tab-icon">🧠</span><span>Reasoning</span></div>
+        <div class="section-tab gs" data-rs="GS" onclick="filterResourceSection('GS')"><span class="tab-icon">🌏</span><span>GS</span></div>
+        <div class="section-tab ca" data-rs="CA" onclick="filterResourceSection('CA')"><span class="tab-icon">📰</span><span>Curr. Affairs</span></div>
       </div>
-      <div class="quiz-list" id="studentResourceList"></div>
+      <div id="studentResourceList"></div>
     </div>
   </div>
 
@@ -737,8 +864,16 @@
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
               <input class="form-control" id="resTitle" placeholder="Title (e.g. History Notes)"/>
               <select class="form-control" id="resCat"><option>UPSC</option><option>MPPSC</option><option>SSC</option></select>
+              <div class="form-group" style="grid-column:1/-1;margin-bottom:0">
+                <label class="form-label">Subject Section</label>
+                <select class="form-control" id="resSection">
+                  <option value="Maths">🔢 Maths</option>
+                  <option value="Reasoning">🧠 Reasoning</option>
+                  <option value="GS">🌏 General Studies (GS)</option>
+                  <option value="CA">📰 Current Affairs (CA)</option>
+                </select>
+              </div>
               <input class="form-control" type="file" id="resFile" accept=".pdf, application/pdf, image/*" style="grid-column:1/-1"/>
-
               <button class="btn btn-primary" style="grid-column:1/-1" onclick="uploadAdminResource()">Upload Resource</button>
             </div>
           </div>
@@ -810,6 +945,15 @@
                   <option value="Hard">Hard</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label class="form-label">📂 Subject Section</label>
+                <select class="form-control" id="aiSection">
+                  <option value="Maths">🔢 Maths</option>
+                  <option value="Reasoning">🧠 Reasoning</option>
+                  <option value="GS" selected>🌏 General Studies (GS)</option>
+                  <option value="CA">📰 Current Affairs (CA)</option>
+                </select>
+              </div>
             </div>
 
             <button class="ai-gen-btn" id="aiGenBtn" style="display:none" onclick="generateQuizFromFile()">
@@ -859,6 +1003,15 @@
                     <option value="SSC">SSC</option><option value="General">General</option>
                   </select>
                 </div>
+      <div class="form-group">
+        <label class="form-label">📂 Subject Section</label>
+        <select class="form-control" id="aiQuizSection">
+          <option value="Maths">🔢 Maths</option>
+          <option value="Reasoning">🧠 Reasoning</option>
+          <option value="GS" selected>🌏 General Studies (GS)</option>
+          <option value="CA">📰 Current Affairs (CA)</option>
+        </select>
+      </div>
               </div>
             </div>
           </div>
@@ -926,6 +1079,15 @@
           <label class="form-label">UPI ID (optional)</label>
           <input class="form-control" id="qUpiId" placeholder="yourname@upi"/>
         </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📂 Subject Section</label>
+        <select class="form-control" id="qSection">
+          <option value="Maths">🔢 Maths</option>
+          <option value="Reasoning">🧠 Reasoning</option>
+          <option value="GS" selected>🌏 General Studies (GS)</option>
+          <option value="CA">📰 Current Affairs (CA)</option>
+        </select>
       </div>
       <div class="form-group">
         <label class="form-label">📅 Schedule Publish (optional)</label>
@@ -998,7 +1160,8 @@ const DB = {
       is_paid:        quiz.isPaid  || false,
       price:          quiz.price   || 0,
       upi_id:         quiz.upiId   || '',
-      publish_at:     quiz.publishAt || null
+      publish_at:     quiz.publishAt || null,
+      section:        quiz.section   || 'GS'
     }]);
     if (error) { console.error('saveQuiz:', error.message); return false; }
     return true;
@@ -1118,7 +1281,8 @@ const DB = {
       isPaid:    r.is_paid    || false,
       price:     r.price      || 0,
       upiId:     r.upi_id     || '',
-      publishAt: r.publish_at || null
+      publishAt: r.publish_at || null,
+      section:   r.section    || 'GS'
     };
   },
   _normAttempt(r) {
@@ -1307,6 +1471,8 @@ let state = {
   timer:          null,
   timerRemaining: 0,
   quizFilter:     'available',
+  quizSection:    'all',
+  resourceSection:'all',
   adminTab:       'overview',
   lang:           'en',
   quizzes:  [],
@@ -1579,7 +1745,150 @@ async function goHome() {
 // ════════════════════════════════════════════════════════════
 //  STUDENT HOME
 // ════════════════════════════════════════════════════════════
-// renderStudentHome is defined above (Prize Quiz section handles full load)
+// ════════════════════════════════════════════════════════════
+//  STUDENT HOME — with Streak, Percentile & Section Tabs
+// ════════════════════════════════════════════════════════════
+async function renderStudentHome() {
+  document.getElementById('greetName').textContent = state.user.name || state.user.email;
+  showLoader(t('Loading…','लोड हो रहा है…'));
+  const [quizzes, myAttempts, allAttempts, unlockedIds, prizeQs, myEntries] = await Promise.all([
+    DB.getQuizzes(),
+    DB.getAttempts(state.user.id),
+    DB.getAttempts(),          // needed for percentile
+    DB.getUnlockedQuizIds(state.user.id),
+    DB.getPrizeQuizzes(),
+    DB.getMyPrizeEntries(state.user.id)
+  ]);
+  state.quizzes        = quizzes;
+  state.attempts       = myAttempts;
+  state.unlockedQuizIds= unlockedIds;
+  state.prizeQuizzes   = prizeQs;
+  state.myPrizeEntries = myEntries;
+  hideLoader();
+
+  // ── Stats ─────────────────────────────────────────────
+  document.getElementById('statAttempted').textContent = myAttempts.length;
+  document.getElementById('statAvgScore').textContent  = myAttempts.length
+    ? Math.round(myAttempts.reduce((s,a)=>s+a.score,0)/myAttempts.length)+'%' : '—';
+
+  // ── Streak ────────────────────────────────────────────
+  renderStreakCard(myAttempts);
+
+  // ── Percentile ────────────────────────────────────────
+  renderPercentileCard(myAttempts, allAttempts);
+
+  // ── Prize hero banner ─────────────────────────────────
+  const prizeHero = document.getElementById('prizeHeroBanner');
+  const livePrize = prizeQs.find(p => p.status === 'active');
+  if (livePrize) {
+    prizeHero.style.display = 'block';
+    prizeHero.innerHTML = buildPrizeHero(livePrize);
+  } else { prizeHero.style.display = 'none'; }
+
+  renderQuizList();
+}
+
+// ── Streak Calculation & Render ──────────────────────────
+function renderStreakCard(attempts) {
+  const card = document.getElementById('streakCard');
+  if (!attempts.length) { card.style.display = 'none'; return; }
+
+  // Get unique attempt dates sorted desc
+  const dates = [...new Set(
+    attempts.map(a => new Date(a.completedAt).toDateString())
+  )].map(d => new Date(d)).sort((a,b) => b-a);
+
+  let streak = 0;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+
+  let check = new Date(dates[0]); check.setHours(0,0,0,0);
+  if (check.getTime() !== today.getTime() && check.getTime() !== yesterday.getTime()) {
+    // Streak is 0 — last activity was before yesterday
+    card.style.display = 'none'; return;
+  }
+  for (let i=0; i<dates.length; i++) {
+    const d = new Date(dates[i]); d.setHours(0,0,0,0);
+    const expected = new Date(today); expected.setDate(today.getDate()-i);
+    if (d.getTime() === expected.getTime()) streak++;
+    else break;
+  }
+  if (streak < 1) { card.style.display = 'none'; return; }
+  card.style.display = 'flex';
+
+  // Last 7 days dots
+  const days = ['S','M','T','W','T','F','S'];
+  const todayDay = today.getDay();
+  const dateSet = new Set(dates.map(d => { const x=new Date(d); x.setHours(0,0,0,0); return x.getTime(); }));
+  const dots = Array.from({length:7}, (_,i) => {
+    const d = new Date(today); d.setDate(today.getDate()-(6-i)); d.setHours(0,0,0,0);
+    const isToday = i===6;
+    const hasAttempt = dateSet.has(d.getTime());
+    const dayName = days[d.getDay()];
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div class="streak-dot${isToday?' today':hasAttempt?' active':''}"></div>
+      <span style="font-size:9px;opacity:.5;font-weight:700">${dayName}</span>
+    </div>`;
+  }).join('');
+
+  card.innerHTML = `
+    <div class="streak-flame">🔥</div>
+    <div class="streak-info">
+      <div class="streak-num">${streak} <span style="font-size:16px;font-family:var(--font-body);color:#ffd700;opacity:.8">${streak===1?'day':'days'}</span></div>
+      <div class="streak-label">${t('Daily Streak','दैनिक स्ट्रीक')}</div>
+      <div class="streak-sub">${streak>=7?'🏆 Amazing! Keep it up!':streak>=3?'💪 Great consistency!':'📚 Quiz daily to build streak'}</div>
+      <div class="streak-dots" style="margin-top:10px">${dots}</div>
+    </div>`;
+}
+
+// ── Percentile Calculation & Render ─────────────────────
+function renderPercentileCard(myAttempts, allAttempts) {
+  const card = document.getElementById('percentileCard');
+  if (!myAttempts.length || !allAttempts.length) { card.style.display='none'; return; }
+  card.style.display = 'flex';
+
+  const myAvg = myAttempts.reduce((s,a)=>s+a.score,0)/myAttempts.length;
+
+  // Group allAttempts by user, get avg per user
+  const userAvgs = {};
+  allAttempts.forEach(a => {
+    if (!userAvgs[a.userId]) userAvgs[a.userId] = [];
+    userAvgs[a.userId].push(a.score);
+  });
+  const allUserAvgs = Object.values(userAvgs).map(scores => scores.reduce((s,v)=>s+v,0)/scores.length);
+  const below = allUserAvgs.filter(avg => avg < myAvg).length;
+  const percentile = Math.round((below / allUserAvgs.length) * 100);
+  const p = Math.min(percentile, 99);
+
+  const r = 30, circ = 2*Math.PI*r;
+  const dash = (p/100)*circ;
+  const color = p>=75?'#27ae60':p>=50?'var(--gold)':'var(--saffron)';
+  const msg = p>=90?'Top 10%! Outstanding 🏆':p>=75?'Top 25% — Excellent!':p>=50?'Above average 👍':'Keep practising 💪';
+
+  card.innerHTML = `
+    <div class="percentile-ring">
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r="${r}" fill="none" stroke="var(--border)" stroke-width="6"/>
+        <circle cx="36" cy="36" r="${r}" fill="none" stroke="${color}" stroke-width="6"
+          stroke-dasharray="${dash.toFixed(1)} ${(circ-dash).toFixed(1)}" stroke-linecap="round"/>
+      </svg>
+      <div class="percentile-ring-val" style="color:${color}">${p}%</div>
+    </div>
+    <div class="percentile-info">
+      <h4>${t('Your Percentile','आपका पर्सेंटाइल')}</h4>
+      <p>${t(`You scored better than ${p}% of all students.`,`आपने ${p}% छात्रों से बेहतर प्रदर्शन किया।`)}</p>
+      <p style="font-weight:700;color:${color};margin-top:4px">${msg}</p>
+    </div>`;
+}
+
+// ── Section filter ────────────────────────────────────────
+function filterSection(section) {
+  state.quizSection = section;
+  document.querySelectorAll('#quizSectionTabs .section-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.section === section);
+  });
+  renderQuizList();
+}
 
 function filterQuizzes(f) {
   state.quizFilter = f;
@@ -1596,6 +1905,10 @@ function renderQuizList() {
   let list = state.quizFilter === 'available'
     ? quizzes.filter(q => !attemptedIds.has(q.id))
     : quizzes.filter(q =>  attemptedIds.has(q.id));
+  // Apply section filter
+  if (state.quizSection && state.quizSection !== 'all') {
+    list = list.filter(q => (q.section || 'GS') === state.quizSection);
+  }
 
   const container = document.getElementById('quizList');
   const empty     = document.getElementById('quizEmpty');
@@ -1629,6 +1942,7 @@ function renderQuizList() {
           <span class="meta-tag">⏱ ${q.timeLimit}m</span>
           <span class="meta-sep">·</span>
           <span class="meta-tag">${q.questions.length} ${t('Qs','प्र')}</span>
+          ${q.section ? `<span class="badge sec-${q.section.toLowerCase().replace(' ','')} " style="font-size:11px;padding:2px 8px">${q.section}</span>` : ''}
           <span class="meta-sep">·</span>
           <span class="meta-tag">${dateStr}</span>
           ${hasHi ? '<span class="bilingual-badge">EN · हि</span>' : ''}
@@ -2018,33 +2332,170 @@ async function renderLeaderboard() {
 //  PROFILE
 // ════════════════════════════════════════════════════════════
 async function renderProfile() {
-  const u        = state.user;
-  const attempts = await DB.getAttempts(u.id);
-  const avg      = attempts.length ? Math.round(attempts.reduce((s,a)=>s+a.score,0)/attempts.length) : null;
+  const u = state.user;
+  showLoader(t('Loading analysis…','विश्लेषण लोड हो रहा है…'));
+  const [myAttempts, allAttempts] = await Promise.all([
+    DB.getAttempts(u.id), DB.getAttempts()
+  ]);
+  hideLoader();
+  if (!myAttempts.length) {
+    document.getElementById('profileContent').innerHTML = `
+      <div class="card fade-in"><div class="card-body" style="text-align:center;padding:40px">
+        <div style="font-size:48px;margin-bottom:12px">📊</div>
+        <div style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:8px">${u.name||'Student'}</div>
+        <div style="font-size:13px;color:var(--text-muted)">${u.email}</div>
+        <div style="margin-top:16px;color:var(--text-muted)">${t('No attempts yet — take a quiz to see your analysis!','अभी तक कोई प्रयास नहीं — विश्लेषण देखने के लिए क्विज़ दें!')}</div>
+      </div></div>`;
+    return;
+  }
+  const avg     = Math.round(myAttempts.reduce((s,a)=>s+a.score,0)/myAttempts.length);
+  const best    = Math.max(...myAttempts.map(a=>a.score));
+  const correct = myAttempts.reduce((s,a)=>s+a.correct,0);
+  const total   = myAttempts.reduce((s,a)=>s+a.total,0);
+  const wrong   = myAttempts.reduce((s,a)=>s+a.wrong,0);
+  const skipped = myAttempts.reduce((s,a)=>s+a.skipped,0);
+  const accuracy= total>0?Math.round((correct/total)*100):0;
+
+  // Percentile
+  const userAvgs = {};
+  allAttempts.forEach(a=>{if(!userAvgs[a.userId])userAvgs[a.userId]=[];userAvgs[a.userId].push(a.score);});
+  const allAvgs = Object.values(userAvgs).map(s=>s.reduce((x,v)=>x+v,0)/s.length);
+  const below   = allAvgs.filter(v=>v<avg).length;
+  const pct     = allAvgs.length>1?Math.min(Math.round((below/allAvgs.length)*100),99):50;
+
+  // Streak
+  const dates = [...new Set(myAttempts.map(a=>new Date(a.completedAt).toDateString()))]
+    .map(d=>new Date(d)).sort((a,b)=>b-a);
+  let streak=0;
+  const today=new Date();today.setHours(0,0,0,0);
+  for(let i=0;i<dates.length;i++){
+    const d=new Date(dates[i]);d.setHours(0,0,0,0);
+    const exp=new Date(today);exp.setDate(today.getDate()-i);
+    if(d.getTime()===exp.getTime())streak++;else break;
+  }
+
+  // Section-wise performance
+  const sections = [
+    {key:'Maths',     icon:'🔢', color:'#2b4fa0'},
+    {key:'Reasoning', icon:'🧠', color:'#6b3fa0'},
+    {key:'GS',        icon:'🌏', color:'#113f2b'},
+    {key:'CA',        icon:'📰', color:'#c69c3a'}
+  ];
+  const sectionStats = sections.map(s => {
+    const sa = myAttempts.filter(a => {
+      const q = state.quizzes.find(q=>q.id===a.quizId);
+      return q && (q.section||'GS') === s.key;
+    });
+    return { ...s, count:sa.length, avg: sa.length?Math.round(sa.reduce((x,a)=>x+a.score,0)/sa.length):null };
+  });
+
+  // Last 7 days score trend
+  const trendDays = Array.from({length:7},(_,i)=>{
+    const d=new Date(today);d.setDate(today.getDate()-(6-i));d.setHours(0,0,0,0);
+    const dayAttempts=myAttempts.filter(a=>{const x=new Date(a.completedAt);x.setHours(0,0,0,0);return x.getTime()===d.getTime();});
+    const score=dayAttempts.length?Math.round(dayAttempts.reduce((s,a)=>s+a.score,0)/dayAttempts.length):0;
+    const days=['S','M','T','W','T','F','S'];
+    return {day:days[d.getDay()],score,isToday:i===6};
+  });
+  const maxTrend=Math.max(...trendDays.map(d=>d.score),1);
+
+  // Accuracy donut
+  const r=34,circ=2*Math.PI*r,dash=(accuracy/100)*circ;
+  const pctColor=pct>=75?'#27ae60':pct>=50?'var(--gold)':'var(--saffron)';
+  const pr=30,pcirc=2*Math.PI*pr,pdash=(pct/100)*pcirc;
 
   document.getElementById('profileContent').innerHTML = `
+    <!-- Profile header -->
     <div class="card fade-in" style="margin-bottom:16px">
-      <div class="card-body" style="text-align:center;padding:32px">
-        <div style="width:72px;height:72px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:28px;font-weight:700;margin:0 auto 14px">${(u.name||u.email||'U').charAt(0).toUpperCase()}</div>
+      <div class="card-body" style="text-align:center;padding:28px">
+        <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#206d4b);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:26px;font-weight:700;margin:0 auto 12px;box-shadow:0 4px 12px rgba(17,63,43,.2)">${(u.name||u.email||'U').charAt(0).toUpperCase()}</div>
         <div style="font-family:var(--font-display);font-size:20px;font-weight:700">${u.name||'—'}</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-top:4px">${u.email}</div>
-        <div style="margin-top:10px"><span class="badge badge-green">${u.exam||'General'}</span></div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:3px">${u.email}</div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap">
+          <span class="badge badge-green">${u.exam||'General'}</span>
+          ${streak>0?`<span class="badge" style="background:#1a1814;color:#ffd700">🔥 ${streak}-day streak</span>`:''}
+          <span class="badge" style="background:${pctColor}20;color:${pctColor}">Top ${100-pct}%</span>
+        </div>
       </div>
     </div>
-    <div class="stats-grid" style="margin-bottom:16px">
-      <div class="stat-card"><div class="stat-value">${attempts.length}</div><div class="stat-label">${t('Quizzes Done','प्रश्नोत्तरी')}</div></div>
-      <div class="stat-card"><div class="stat-value">${avg!==null?avg+'%':'—'}</div><div class="stat-label">${t('Average Score','औसत स्कोर')}</div></div>
+
+    <!-- Key stats row -->
+    <div class="analysis-grid" style="margin-bottom:16px">
+      <div class="analysis-card"><h4>${t('Total Quizzes','कुल क्विज़')}</h4>
+        <div style="font-family:var(--font-display);font-size:36px;font-weight:700">${myAttempts.length}</div></div>
+      <div class="analysis-card"><h4>${t('Best Score','सर्वश्रेष्ठ')}</h4>
+        <div style="font-family:var(--font-display);font-size:36px;font-weight:700;color:var(--accent)">${best}%</div></div>
+      <div class="analysis-card"><h4>${t('Average Score','औसत स्कोर')}</h4>
+        <div style="font-family:var(--font-display);font-size:36px;font-weight:700;color:${avg>=75?'#27ae60':avg>=50?'var(--gold)':'var(--red)'}">${avg}%</div></div>
+      <div class="analysis-card"><h4>${t('Percentile','पर्सेंटाइल')}</h4>
+        <div style="font-family:var(--font-display);font-size:36px;font-weight:700;color:${pctColor}">${pct}%</div>
+        <div style="font-size:11px;color:var(--text-muted)">Better than ${pct}% of students</div></div>
     </div>
+
+    <!-- Accuracy + Weekly Trend -->
+    <div class="analysis-grid" style="margin-bottom:16px">
+      <div class="analysis-card">
+        <h4>${t('Answer Accuracy','उत्तर सटीकता')}</h4>
+        <div class="accuracy-wrap">
+          <div class="accuracy-donut">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="${r}" fill="none" stroke="var(--border)" stroke-width="7"/>
+              <circle cx="40" cy="40" r="${r}" fill="none" stroke="var(--accent)" stroke-width="7"
+                stroke-dasharray="${dash.toFixed(1)} ${(circ-dash).toFixed(1)}" stroke-linecap="round" transform="rotate(-90 40 40)"/>
+            </svg>
+            <div class="accuracy-val"><span>${accuracy}%</span><span>Accuracy</span></div>
+          </div>
+          <div class="accuracy-legend">
+            <div class="acc-leg-row"><div class="acc-leg-dot" style="background:#27ae60"></div><span>${correct} ${t('Correct','सही')}</span></div>
+            <div class="acc-leg-row"><div class="acc-leg-dot" style="background:var(--red)"></div><span>${wrong} ${t('Wrong','गलत')}</span></div>
+            <div class="acc-leg-row"><div class="acc-leg-dot" style="background:var(--text-light)"></div><span>${skipped} ${t('Skipped','छोड़े')}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="analysis-card">
+        <h4>${t('7-Day Activity','7 दिन की गतिविधि')}</h4>
+        <div class="trend-bars">
+          ${trendDays.map(d=>`
+          <div class="trend-bar-wrap">
+            <div class="trend-bar${d.isToday?' today-bar':''}" style="height:${d.score?Math.max((d.score/maxTrend)*52,6):4}px"></div>
+            <span class="trend-day">${d.day}</span>
+          </div>`).join('')}
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text-muted);text-align:center">Average score per day</div>
+      </div>
+    </div>
+
+    <!-- Section-wise performance -->
+    <div class="analysis-card" style="margin-bottom:16px">
+      <h4>${t('Performance by Subject','विषय-वार प्रदर्शन')}</h4>
+      <div class="bar-chart">
+        ${sectionStats.map(s=>`
+        <div class="section-perf-row">
+          <div class="section-perf-icon">${s.icon}</div>
+          <div class="section-perf-name">${s.key}</div>
+          <div class="section-perf-bar"><div class="section-perf-fill" style="width:${s.avg||0}%;background:${s.color}"></div></div>
+          <div class="section-perf-score" style="color:${s.color}">${s.avg!==null?s.avg+'%':'—'}</div>
+          <div style="font-size:11px;color:var(--text-muted);min-width:40px;text-align:right">${s.count} quiz${s.count!==1?'zes':''}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Attempt history -->
     <div class="section-header"><div class="section-title" style="font-size:17px">${t('Attempt History','प्रयास इतिहास')}</div></div>
-    ${attempts.length ? `<div class="table-wrap"><table>
-      <thead><tr><th>${t('Quiz','क्विज़')}</th><th>${t('Score','स्कोर')}</th><th>${t('Date','तारीख')}</th></tr></thead>
-      <tbody>${attempts.map(a=>`<tr>
-        <td>${a.quizTitle}<br><span style="font-size:11px;color:var(--text-muted)">${a.category}</span></td>
-        <td><span class="badge ${a.score>=80?'badge-green':a.score>=50?'badge-gold':'badge-red'}">${a.score}%</span></td>
-        <td style="color:var(--text-muted);white-space:nowrap">${new Date(a.completedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</td>
-      </tr>`).join('')}</tbody>
-    </table></div>` : `<div class="empty-state"><p>${t('No quiz attempts yet.','अभी कोई प्रयास नहीं।')}</p></div>`}
-  `;
+    <div class="table-wrap" style="margin-bottom:32px"><table>
+      <thead><tr><th>${t('Quiz','क्विज़')}</th><th>${t('Section','विषय')}</th><th>${t('Score','स्कोर')}</th><th>${t('Date','तारीख')}</th></tr></thead>
+      <tbody>${myAttempts.map(a=>{
+        const qz = state.quizzes.find(q=>q.id===a.quizId);
+        const sec = qz?.section || '—';
+        const secColors = {Maths:'sec-maths',Reasoning:'sec-reasoning',GS:'sec-gs',CA:'sec-ca'};
+        return `<tr>
+          <td><strong>${a.quizTitle}</strong><br><span style="font-size:11px;color:var(--text-muted)">${a.category}</span></td>
+          <td><span class="badge sec-${sec.toLowerCase()}" style="font-size:11px">${sec}</span></td>
+          <td><span class="badge ${a.score>=80?'badge-green':a.score>=50?'badge-gold':'badge-red'}">${a.score}%</span></td>
+          <td style="color:var(--text-muted);white-space:nowrap">${new Date(a.completedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
 }
 
 // ════════════════════════════════════════════════════════════
@@ -2113,8 +2564,18 @@ async function renderAdminQuizzes() {
   state.attempts = attempts;
   hideLoader();
 
-  document.getElementById('adminQuizList').innerHTML = quizzes.length ? `
-    <div class="quiz-list">${quizzes.map(q => {
+  const currentSection = window._adminQuizSection || 'all';
+  const sections = ['all','Maths','Reasoning','GS','CA'];
+  const sectionLabels = { all:'📚 All', Maths:'🔢 Maths', Reasoning:'🧠 Reasoning', GS:'🌏 GS', CA:'📰 CA' };
+
+  const tabsHtml = `<div class="section-tabs" style="margin-bottom:16px" id="adminQuizSectionTabs">
+    ${sections.map(s => `<div class="section-tab ${s==='Maths'?'math':s==='Reasoning'?'reasoning':s==='GS'?'gs':s==='CA'?'ca':''} ${currentSection===s?'active':''}" onclick="setAdminQuizSection('${s}')">${sectionLabels[s]}</div>`).join('')}
+  </div>`;
+
+  const filtered = currentSection === 'all' ? quizzes : quizzes.filter(q => (q.section || 'GS') === currentSection);
+
+  const listHtml = filtered.length ? `
+    <div class="quiz-list">${filtered.map(q => {
       const qa   = attempts.filter(a => a.quizId === q.id);
       const avg  = qa.length ? Math.round(qa.reduce((s,a)=>s+a.score,0)/qa.length) : null;
       const hasHi = !!(q.titleHi);
@@ -2124,6 +2585,7 @@ async function renderAdminQuizzes() {
           ${hasHi ? `<div class="quiz-item-title-hi">${q.titleHi}</div>` : ''}
           <div class="quiz-item-meta">
             <span class="cat-chip cat-${q.category.toLowerCase()}">${q.category}</span>
+            ${q.section ? `<span class="badge sec-${q.section.toLowerCase()}" style="font-size:11px;padding:2px 8px">${q.section}</span>` : ''}
             <span class="meta-tag">⏱ ${q.timeLimit}m</span>
             <span class="meta-sep">·</span>
             <span class="meta-tag">${q.questions.length} Qs</span>
@@ -2140,7 +2602,14 @@ async function renderAdminQuizzes() {
           <button class="btn btn-danger btn-sm" onclick="deleteQuiz('${q.id}')">Del</button>
         </div>
       </div>`;
-    }).join('')}</div>` : `<div class="empty-state"><h3>No quizzes yet</h3><p>Click "New Quiz" to create one.</p></div>`;
+    }).join('')}</div>` : `<div class="empty-state"><h3>No quizzes in this section</h3><p>Click "New Quiz" to create one.</p></div>`;
+
+  document.getElementById('adminQuizList').innerHTML = tabsHtml + listHtml;
+}
+
+function setAdminQuizSection(section) {
+  window._adminQuizSection = section;
+  renderAdminQuizzes();
 }
 
 async function renderAdminResponses() {
@@ -2371,7 +2840,8 @@ async function saveQuiz() {
   const scheduleRaw= (document.getElementById('qScheduleAt') || {value:''}).value;
   const publishAt  = scheduleRaw ? new Date(scheduleRaw).toISOString() : null;
   const isScheduled= publishAt && new Date(publishAt) > new Date();
-  const quiz = { id:'quiz_'+Date.now(), title, titleHi, category, desc, descHi, timeLimit, questions, createdAt: new Date().toISOString(), active: !isScheduled, isPaid, price, upiId, publishAt };
+  const section = (document.getElementById('qSection')||{value:'GS'}).value;
+  const quiz = { id:'quiz_'+Date.now(), title, titleHi, category, section, desc, descHi, timeLimit, questions, createdAt: new Date().toISOString(), active: !isScheduled, isPaid, price, upiId, publishAt };
 
   showLoader('Publishing quiz…');
   const ok = await DB.saveQuiz(quiz);
@@ -3088,6 +3558,15 @@ function renderAdminCsvImport() {
                 <option>UPSC</option><option>MPPSC</option><option>SSC</option><option>General</option>
               </select>
             </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">📂 Subject Section</label>
+              <select class="form-control" id="csvQuizSection">
+                <option value="Maths">🔢 Maths</option>
+                <option value="Reasoning">🧠 Reasoning</option>
+                <option value="GS" selected>🌏 General Studies (GS)</option>
+                <option value="CA">📰 Current Affairs (CA)</option>
+              </select>
+            </div>
             <div class="form-group">
               <label class="form-label">Time Limit (min)</label>
               <input class="form-control" id="csvQuizTime" type="number" value="20"/>
@@ -3234,6 +3713,7 @@ async function importCsvQuiz() {
   var title = (document.getElementById('csvQuizTitle') || {value:''}).value.trim();
   if (!title) { toast('Enter a quiz title', 'error'); return; }
   var cat      = (document.getElementById('csvQuizCat') || {value:'UPSC'}).value;
+  var section  = (document.getElementById('csvQuizSection') || {value:'GS'}).value;
   var timeLimit= parseInt((document.getElementById('csvQuizTime') || {value:'20'}).value) || 20;
   var isPaid   = (document.getElementById('csvQuizPaid') || {value:'free'}).value === 'paid';
   var schedRaw = (document.getElementById('csvScheduleAt') || {value:''}).value;
@@ -3245,6 +3725,7 @@ async function importCsvQuiz() {
     title:     title,
     titleHi:   '',
     category:  cat,
+    section:   section,
     desc:      'Imported from CSV — ' + _csvParsedQuestions.length + ' questions',
     descHi:    '',
     timeLimit: timeLimit,
@@ -3336,16 +3817,16 @@ async function fetchResources() {
   if (!error) allResources = data || [];
 }
 
-async function renderResources(category = 'All') {
+async function renderResources(section = 'all') {
   showLoader(t('Loading resources...', 'सामग्री लोड हो रही है...'));
   await fetchResources();
   hideLoader();
   
-  const list = category === 'All' ? allResources : allResources.filter(r => r.category === category);
+  const list = section === 'all' ? allResources : allResources.filter(r => (r.section || 'GS') === section);
   const container = document.getElementById('studentResourceList');
   
   if (!list.length) {
-    container.innerHTML = `<div class="empty-state"><h3>${t('No resources yet','अभी कोई सामग्री नहीं')}</h3></div>`;
+    container.innerHTML = `<div class="empty-state"><h3>${t('No resources yet','अभी कोई सामग्री नहीं')}</h3><p>${t('Check back later.','बाद में जाँचें।')}</p></div>`;
     return;
   }
 
@@ -3353,12 +3834,13 @@ async function renderResources(category = 'All') {
     <div class="quiz-item fade-in" onclick="window.open('${r.file_url}', '_blank')">
       <div style="display:flex;align-items:center;gap:16px">
         <div style="width:40px;height:40px;background:var(--accent-light);color:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">
-          ${r.file_type.includes('pdf') ? '📄' : '🖼️'}
+          ${(r.file_type||'').includes('pdf') ? '📄' : '🖼️'}
         </div>
         <div>
           <div class="quiz-item-title">${r.title}</div>
           <div class="quiz-item-meta">
-            <span class="cat-chip cat-${r.category.toLowerCase()}">${r.category}</span>
+            ${r.section ? `<span class="badge sec-${(r.section||'gs').toLowerCase()}" style="font-size:11px;padding:2px 8px">${r.section}</span>` : ''}
+            <span class="cat-chip cat-${(r.category||'upsc').toLowerCase()}">${r.category||'—'}</span>
             <span class="meta-sep">·</span>
             <span class="meta-tag">${new Date(r.created_at).toLocaleDateString()}</span>
           </div>
@@ -3371,64 +3853,56 @@ async function renderResources(category = 'All') {
 
 function filterResources(cat) { renderResources(cat); }
 
-// Admin Upload Logic
-async function uploadAdminResource() {
-  const title = document.getElementById('resTitle').value.trim();
-  const cat = document.getElementById('resCat').value;
-  const fileInput = document.getElementById('resFile');
-  
-  if (!title || !fileInput.files.length) { toast('Please provide a title and file', 'error'); return; }
-  
-  const file = fileInput.files[0];
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-
-  showLoader('Uploading file...');
-  
-  // 1. Upload to Storage Bucket
-  const { data: uploadData, error: uploadError } = await sb.storage
-    .from('revision_materials')
-    .upload(fileName, file);
-    
-  if (uploadError) { hideLoader(); toast('File upload failed', 'error'); console.error(uploadError); return; }
-
-  // 2. Get Public URL
-  const { data: { publicUrl } } = sb.storage.from('revision_materials').getPublicUrl(fileName);
-
-  // 3. Save to Database
-  const resourceData = {
-    id: 'res_' + Date.now(),
-    title: title,
-    category: cat,
-    file_url: publicUrl,
-    file_type: file.type,
-    created_at: new Date().toISOString()
-  };
-
-  const { error: dbError } = await sb.from('resources').insert([resourceData]);
-  
-  hideLoader();
-  if (dbError) { toast('Database save failed', 'error'); console.error(dbError); return; }
-
-  toast('Resource uploaded successfully!', 'success');
-  document.getElementById('resTitle').value = '';
-  fileInput.value = '';
-  await fetchResources();
-  renderAdminResources();
+function filterResourceSection(section) {
+  state.resourceSection = section;
+  document.querySelectorAll('#resSectionTabs .section-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.rs === section);
+  });
+  renderResources(section);
 }
+
+// Admin Upload Logic
+
+
 
 async function renderAdminResources() {
   await fetchResources();
   const container = document.getElementById('adminResourceList');
-  container.innerHTML = allResources.map(r => `
+
+  // Build section filter tabs for admin resources
+  const sections = ['all', 'Maths', 'Reasoning', 'GS', 'CA'];
+  const sectionLabels = { all:'📚 All', Maths:'🔢 Maths', Reasoning:'🧠 Reasoning', GS:'🌏 GS', CA:'📰 Curr. Affairs' };
+  const currentFilter = window._adminResFilter || 'all';
+
+  const tabsHtml = `<div class="section-tabs" style="margin-bottom:16px" id="adminResTabs">
+    ${sections.map(s => `<div class="section-tab ${s==='math'?'math':s==='Reasoning'?'reasoning':s==='GS'?'gs':s==='CA'?'ca':''} ${currentFilter===s?'active':''}" onclick="setAdminResFilter('${s}')">${sectionLabels[s]}</div>`).join('')}
+  </div>`;
+
+  const filtered = currentFilter === 'all' ? allResources : allResources.filter(r => (r.section || 'GS') === currentFilter);
+
+  const listHtml = filtered.length ? filtered.map(r => `
     <div class="quiz-item" style="margin-bottom:10px">
       <div class="quiz-item-info">
-        <div class="quiz-item-title">${r.title} <span class="badge badge-gray" style="font-size:10px">${r.file_type}</span></div>
-        <div class="quiz-item-meta"><span class="cat-chip cat-${r.category.toLowerCase()}">${r.category}</span></div>
+        <div class="quiz-item-title">${r.title} <span class="badge badge-gray" style="font-size:10px">${r.file_type||'—'}</span></div>
+        <div class="quiz-item-meta">
+          ${r.section ? `<span class="badge sec-${(r.section||'gs').toLowerCase()}" style="font-size:11px;padding:2px 8px">${r.section}</span>` : ''}
+          <span class="cat-chip cat-${(r.category||'upsc').toLowerCase()}">${r.category||'—'}</span>
+          <span class="meta-tag">${new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>
+        </div>
       </div>
-      <button class="btn btn-danger btn-sm" onclick="deleteResource('${r.id}', '${r.file_url}')">Delete</button>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn btn-outline btn-sm" onclick="window.open('${r.file_url}','_blank')">👁 View</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteResource('${r.id}', '${r.file_url}')">Delete</button>
+      </div>
     </div>
-  `).join('');
+  `).join('') : `<div class="empty-state"><h3>No resources in this section</h3></div>`;
+
+  container.innerHTML = tabsHtml + listHtml;
+}
+
+function setAdminResFilter(section) {
+  window._adminResFilter = section;
+  renderAdminResources();
 }
 
 async function deleteResource(id, url) {
@@ -3441,6 +3915,46 @@ async function deleteResource(id, url) {
   hideLoader();
   toast('Deleted successfully', 'success');
   renderAdminResources();
+}
+async function uploadAdminResource() {
+  // 1. Grab values using the EXACT IDs from your HTML
+  const title   = document.getElementById('resTitle')?.value?.trim();
+  const section = document.getElementById('resSection')?.value || 'GS';
+  const file    = document.getElementById('resFile')?.files?.[0];
+  const category= document.getElementById('resCat')?.value || 'UPSC'; // Fixed ID from resCategory to resCat
+
+  if (!title || !file) { toast('Enter title and select a file','error'); return; }
+  
+  showLoader('Uploading resource…');
+  const fileExt  = file.name.split('.').pop();
+  const filePath = `${Date.now()}.${fileExt}`;
+  
+  // 2. Upload to Storage
+  const { error: upErr } = await sb.storage.from('resources').upload(filePath, file);
+  if (upErr) { hideLoader(); toast('Upload failed: '+upErr.message,'error'); return; }
+  
+  const { data: urlData } = sb.storage.from('resources').getPublicUrl(filePath);
+  
+  // 3. Save to Database (Removed 'description' entirely)
+  const { error: dbErr } = await sb.from('resources').insert([{
+    id: 'res_' + Date.now(), 
+    title: title, 
+    section: section, 
+    category: category,
+    file_url: urlData.publicUrl, 
+    file_type: fileExt,
+    created_at: new Date().toISOString()
+  }]);
+  
+  hideLoader();
+  if (dbErr) { toast('DB save failed: '+dbErr.message,'error'); return; }
+  
+  toast('✅ Resource uploaded to '+section+' section!','success');
+  
+  // 4. Clear the form
+  document.getElementById('resTitle').value = '';
+  document.getElementById('resFile').value = '';
+  await renderAdminResources();
 }
 
 // ════════════════════════════════════════════════════════════
@@ -3769,6 +4283,7 @@ async function publishAiQuiz() {
   const titleHi  = document.getElementById('aiQuizTitleHi').value.trim() || d.titleHi  || '';
   const timeLimit= parseInt(document.getElementById('aiQuizTime').value) || 15;
   const category = document.getElementById('aiQuizCat').value;
+  const section  = document.getElementById('aiQuizSection')?.value || document.getElementById('aiSection')?.value || 'GS';
   const isPaid   = document.getElementById('aiQuizIsPaid')?.value === 'paid';
   const price    = isPaid ? (parseInt(document.getElementById('aiQuizPrice')?.value) || 49) : 0;
 
@@ -3786,7 +4301,7 @@ async function publishAiQuiz() {
 
   const quiz = {
     id:        'quiz_ai_' + Date.now(),
-    title, titleHi, category,
+    title, titleHi, category, section,
     desc:      d.desc   || 'AI-generated quiz from uploaded material.',
     descHi:    d.descHi || '',
     timeLimit, questions,
