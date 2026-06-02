@@ -596,6 +596,162 @@
   .res-upload-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   @media(max-width:600px) { .res-upload-grid { grid-template-columns:1fr; } .analysis-grid { grid-template-columns:1fr; } }
 
+  /* ══════════════════════════════════════════════════════
+     👁 VIEW COUNT — CSS
+  ══════════════════════════════════════════════════════ */
+  .view-count-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #f0f4ff; color: #2b4fa0;
+    border: 1px solid #c7d4f5;
+    padding: 2px 9px; border-radius: 99px;
+    font-size: 11px; font-weight: 700; white-space: nowrap;
+  }
+  .view-count-badge svg { opacity: .75; flex-shrink: 0; }
+
+  /* Admin view analytics mini-table */
+  .view-analytics-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--border);
+  }
+  .view-analytics-row:last-child { border-bottom: none; }
+  .view-analytics-bar-track { flex: 1; height: 7px; background: var(--bg); border-radius: 99px; overflow: hidden; }
+  .view-analytics-bar-fill  { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #2b4fa0, #5b82d4); transition: width .5s; }
+
+  /* ══════════════════════════════════════════════════════
+     🔔 NOTIFICATION SYSTEM — CSS
+  ══════════════════════════════════════════════════════ */
+  .notif-bell-wrap {
+    position: relative;
+  }
+  .notif-bell-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all .2s; flex-shrink: 0;
+    position: relative;
+  }
+  .notif-bell-btn:hover { background: var(--accent-light); border-color: var(--accent); }
+  .notif-bell-btn svg { color: var(--text-muted); transition: color .2s; }
+  .notif-bell-btn:hover svg { color: var(--accent); }
+  .notif-badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--red); color: #fff;
+    font-size: 10px; font-weight: 700;
+    min-width: 17px; height: 17px; border-radius: 99px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 4px; border: 2px solid var(--surface);
+    animation: pulse .8s ease 2;
+    pointer-events: none;
+  }
+  .notif-badge.hidden { display: none; }
+
+  /* Notification dropdown panel */
+  .notif-panel {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    width: 330px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-lg); z-index: 200;
+    display: none; flex-direction: column; overflow: hidden;
+    animation: fadeIn .2s ease both;
+  }
+  .notif-panel.open { display: flex; }
+  .notif-panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px 10px; border-bottom: 1px solid var(--border);
+  }
+  .notif-panel-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .notif-panel-actions { display: flex; gap: 6px; }
+  .notif-action-btn {
+    font-size: 11px; font-weight: 600; color: var(--accent);
+    background: none; border: none; cursor: pointer; padding: 2px 6px;
+    border-radius: 6px; transition: background .15s;
+  }
+  .notif-action-btn:hover { background: var(--accent-light); }
+  .notif-action-btn.red { color: var(--text-muted); }
+  .notif-action-btn.red:hover { background: var(--border); color: var(--red); }
+
+  /* Subscribe row */
+  .notif-subscribe-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 18px; background: var(--accent-light);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; color: var(--accent); font-weight: 600;
+  }
+  .notif-subscribe-row .sub-icon { font-size: 18px; flex-shrink: 0; }
+  .notif-subscribe-row .sub-text { flex: 1; line-height: 1.4; }
+  .notif-sub-btn {
+    padding: 5px 12px; background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius-sm); font-size: 11px;
+    font-weight: 700; cursor: pointer; white-space: nowrap;
+    transition: background .2s; flex-shrink: 0;
+  }
+  .notif-sub-btn:hover { background: var(--accent-hover); }
+  .notif-sub-btn.granted { background: #27ae60; }
+  .notif-sub-btn.denied  { background: var(--text-light); cursor: not-allowed; }
+
+  /* Notification list */
+  .notif-list { max-height: 320px; overflow-y: auto; }
+  .notif-list::-webkit-scrollbar { width: 4px; }
+  .notif-list::-webkit-scrollbar-track { background: transparent; }
+  .notif-list::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 4px; }
+
+  .notif-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 18px; border-bottom: 1px solid var(--border);
+    transition: background .15s; cursor: pointer;
+  }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-item:hover { background: var(--bg); }
+  .notif-item.unread { background: var(--accent-light); }
+  .notif-item.unread:hover { background: #d7eddf; }
+  .notif-item-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .notif-item-icon.quiz  { background: var(--accent-light); }
+  .notif-item-icon.resource { background: var(--saffron-light); }
+  .notif-item-body { flex: 1; min-width: 0; }
+  .notif-item-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .notif-item-sub   { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .notif-item-time  { font-size: 10px; color: var(--text-light); margin-top: 3px; }
+  .notif-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 5px; }
+  .notif-dot.hidden { visibility: hidden; }
+
+  .notif-empty {
+    padding: 32px 18px; text-align: center;
+    font-size: 13px; color: var(--text-muted);
+  }
+  .notif-empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+  .notif-panel-footer {
+    padding: 10px 18px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg); font-size: 12px; color: var(--text-muted);
+  }
+  .notif-pref-toggle {
+    display: flex; align-items: center; gap: 6px; cursor: pointer;
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    user-select: none;
+  }
+  .notif-pref-toggle input[type=checkbox] {
+    width: 14px; height: 14px; accent-color: var(--accent);
+    cursor: pointer; flex-shrink: 0;
+  }
+
+  /* New-item flash on bell */
+  @keyframes bellRing {
+    0%   { transform: rotate(0deg); }
+    10%  { transform: rotate(15deg); }
+    20%  { transform: rotate(-12deg); }
+    30%  { transform: rotate(10deg); }
+    40%  { transform: rotate(-8deg); }
+    50%  { transform: rotate(5deg); }
+    60%  { transform: rotate(-3deg); }
+    100% { transform: rotate(0deg); }
+  }
+  .notif-bell-btn.ringing svg { animation: bellRing .6s ease; }
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -618,6 +774,52 @@
         <button class="lang-btn active" id="glt-en" onclick="setLang('en')">EN</button>
         <button class="lang-btn hi-btn" id="glt-hi" onclick="setLang('hi')">हिं</button>
       </div>
+
+      <!-- 🔔 Notification Bell -->
+      <div class="notif-bell-wrap" id="notifBellWrap">
+        <button class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotifPanel()" title="Notifications">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-badge hidden" id="notifBadge">0</span>
+        </button>
+
+        <!-- Notification panel -->
+        <div class="notif-panel" id="notifPanel">
+          <div class="notif-panel-header">
+            <span class="notif-panel-title">🔔 Notifications</span>
+            <div class="notif-panel-actions">
+              <button class="notif-action-btn" onclick="markAllNotifRead()">Mark all read</button>
+              <button class="notif-action-btn red" onclick="clearAllNotifs()">Clear all</button>
+            </div>
+          </div>
+
+          <!-- Push permission row -->
+          <div class="notif-subscribe-row" id="notifSubRow" style="display:none">
+            <span class="sub-icon">📲</span>
+            <span class="sub-text">Get instant alerts when new quizzes &amp; resources drop!</span>
+            <button class="notif-sub-btn" id="notifSubBtn" onclick="requestPushPermission()">Enable</button>
+          </div>
+
+          <div class="notif-list" id="notifList">
+            <div class="notif-empty">
+              <div class="notif-empty-icon">🔔</div>
+              <div>No notifications yet</div>
+              <div style="font-size:11px;margin-top:4px">New quizzes &amp; resources will appear here</div>
+            </div>
+          </div>
+
+          <div class="notif-panel-footer">
+            <label class="notif-pref-toggle" title="Show in-app alerts for new content">
+              <input type="checkbox" id="notifPrefInApp" onchange="saveNotifPrefs()" checked/>
+              In-app alerts
+            </label>
+            <span style="margin-left:auto;font-size:11px" id="notifRealtimeStatus">● Live</span>
+          </div>
+        </div>
+      </div>
+
       <div class="user-chip" id="userChip">
         <div class="user-avatar" id="userAvatar">U</div>
         <span class="uname" id="userName">User</span>
@@ -1590,6 +1792,7 @@ async function bootApp() {
     await renderStudentHome();
   }
   hideLoader();
+  initNotifications();
 }
 
 function setupBottomNav(role) {
@@ -1968,6 +2171,7 @@ async function startQuizOrView(qid) {
   if (quiz.isPaid && !state.unlockedQuizIds.includes(quiz.id)) {
     openUpiPayment(qid); return;
   }
+  trackQuizView(qid);   // 👁 record unique view
   startQuiz(quiz);
 }
 
@@ -2541,8 +2745,79 @@ async function renderAdminOverview() {
     <div class="stat-card"><div class="stat-value">${students.length}</div><div class="stat-label">Students</div></div>
     <div class="stat-card"><div class="stat-value">${attempts.length}</div><div class="stat-label">Responses</div></div>
     <div class="stat-card"><div class="stat-value">${attempts.length ? Math.round(attempts.reduce((s,a)=>s+a.score,0)/attempts.length)+'%' : '—'}</div><div class="stat-label">Avg Score</div></div>
+    <div class="stat-card"><div class="stat-value" style="color:#2b4fa0">${getTotalQuizViews()}</div><div class="stat-label">Quiz Views</div></div>
+    <div class="stat-card"><div class="stat-value" style="color:#6b3fa0">${getTotalResourceViews()}</div><div class="stat-label">Resource Views</div></div>
     <div class="stat-card"><div class="stat-value" style="color:var(--gold)">₹${revenue}</div><div class="stat-label">Revenue Collected</div></div>
     <div class="stat-card"><div class="stat-value" style="color:var(--saffron)">${pending}</div><div class="stat-label">Pending Payments <span style="font-size:12px;cursor:pointer" onclick="adminTab('payments')">→ View</span></div></div>`;
+
+  // ── Top Viewed Quizzes panel ────────────────────────────
+  const viewData = _getViews();
+  const topQuizzes = quizzes
+    .map(q => ({ ...q, views: (viewData.quizzes[q.id] || []).length }))
+    .filter(q => q.views > 0)
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 6);
+  const maxQViews = topQuizzes.length ? topQuizzes[0].views : 1;
+
+  const topResources = allResources
+    .map(r => ({ ...r, views: (viewData.resources[r.id] || []).length }))
+    .filter(r => r.views > 0)
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 6);
+  const maxRViews = topResources.length ? topResources[0].views : 1;
+
+  const topViewedHtml = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div class="card">
+        <div class="card-body" style="padding:20px">
+          <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px">
+            ${eyeIcon(13)} &nbsp;Top Viewed Quizzes
+          </div>
+          ${topQuizzes.length ? topQuizzes.map(q => `
+            <div class="view-analytics-row">
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${q.title}</div>
+                <div class="view-analytics-bar-track" style="margin-top:5px">
+                  <div class="view-analytics-bar-fill" style="width:${Math.round((q.views/maxQViews)*100)}%"></div>
+                </div>
+              </div>
+              <span class="view-count-badge" style="margin-left:10px;flex-shrink:0">${eyeIcon(11)} ${q.views}</span>
+            </div>`).join('')
+          : `<div style="color:var(--text-muted);font-size:13px;padding:12px 0">No quiz views recorded yet.</div>`}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:20px">
+          <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px">
+            ${eyeIcon(13)} &nbsp;Top Viewed Resources
+          </div>
+          ${topResources.length ? topResources.map(r => `
+            <div class="view-analytics-row">
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
+                <div class="view-analytics-bar-track" style="margin-top:5px">
+                  <div class="view-analytics-bar-fill" style="width:${Math.round((r.views/maxRViews)*100)}%;background:linear-gradient(90deg,#6b3fa0,#a57de8)"></div>
+                </div>
+              </div>
+              <span class="view-count-badge" style="margin-left:10px;flex-shrink:0;background:#f5f0fb;color:#6b3fa0;border-color:#d4c3f5">${eyeIcon(11)} ${r.views}</span>
+            </div>`).join('')
+          : `<div style="color:var(--text-muted);font-size:13px;padding:12px 0">No resource views recorded yet.</div>`}
+        </div>
+      </div>
+    </div>`;
+
+  // ── Inject top-viewed panel before recent activity ──────
+  let topViewedEl = document.getElementById('adminTopViewed');
+  if (!topViewedEl) {
+    topViewedEl = document.createElement('div');
+    topViewedEl.id = 'adminTopViewed';
+    const recentEl = document.getElementById('recentActivity');
+    if (recentEl) {
+      // Find parent section-header before recentActivity
+      recentEl.parentNode.insertBefore(topViewedEl, recentEl.previousElementSibling || recentEl);
+    }
+  }
+  topViewedEl.innerHTML = topViewedHtml;
 
   const recent = attempts.slice(0,8);
   document.getElementById('recentActivity').innerHTML = recent.length ? `
@@ -2579,6 +2854,7 @@ async function renderAdminQuizzes() {
       const qa   = attempts.filter(a => a.quizId === q.id);
       const avg  = qa.length ? Math.round(qa.reduce((s,a)=>s+a.score,0)/qa.length) : null;
       const hasHi = !!(q.titleHi);
+      const views = getQuizViews(q.id);
       return `<div class="quiz-item">
         <div class="quiz-item-info">
           <div class="quiz-item-title">${q.title}</div>
@@ -2591,6 +2867,7 @@ async function renderAdminQuizzes() {
             <span class="meta-tag">${q.questions.length} Qs</span>
             <span class="meta-sep">·</span>
             <span class="meta-tag">${qa.length} attempts</span>
+            <span class="view-count-badge">${eyeIcon(11)} ${views} view${views!==1?'s':''}</span>
             ${avg!==null ? `<span class="badge badge-green">Avg ${avg}%</span>` : ''}
             ${hasHi ? '<span class="bilingual-badge">EN · हि</span>' : '<span class="badge badge-gray">EN only</span>'}
             ${q.isPaid ? `<span class="quiz-type-paid">💰 ₹${q.price}</span>` : '<span class="quiz-type-free">✓ Free</span>'}
@@ -2850,6 +3127,8 @@ async function saveQuiz() {
   if (ok) {
     closeModal('createQuiz');
     toast(`Quiz "${title}" published!`, 'success');
+    // 🔔 Notify — realtime will fire for other users; fire locally for admin too
+    addNotification({ type: 'quiz', title, subtitle: `${category} · ${section} · ${timeLimit} min`, id: quiz.id });
     await renderAdminQuizzes();
     adminTab('quizzes');
   } else {
@@ -3427,7 +3706,14 @@ async function renderAdminScheduled() {
   showLoader('Loading scheduled quizzes...');
   // Auto-publish any due quizzes first
   const published = await DB.autoPublishDue();
-  if (published > 0) toast(published + ' quiz(zes) auto-published!', 'success');
+  if (published > 0) {
+    toast(published + ' quiz(zes) auto-published!', 'success');
+    // 🔔 Notify for each newly published quiz
+    const nowQuizzes = await DB.getQuizzes();
+    nowQuizzes.filter(q => q.active && q.publishAt && new Date(q.publishAt) <= new Date())
+      .slice(0, published)
+      .forEach(q => addNotification({ type: 'quiz', title: q.title, subtitle: `${q.category} · ${q.section} · Auto-published`, id: q.id }));
+  }
 
   const quizzes = await DB.getQuizzes();
   hideLoader();
@@ -3744,6 +4030,8 @@ async function importCsvQuiz() {
 
   if (ok) {
     toast('✅ ' + _csvParsedQuestions.length + ' questions imported!' + (isScheduled ? ' Scheduled for ' + new Date(publishAt).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : ' Quiz is now Live.'), 'success');
+    // 🔔 Notify (only if published immediately)
+    if (!isScheduled) addNotification({ type: 'quiz', title: title, subtitle: `${cat} · ${section} · ${_csvParsedQuestions.length} questions`, id: quiz.id });
     resetCsvImport();
     if (isScheduled) adminTab('scheduled'); else adminTab('quizzes');
   } else {
@@ -3831,7 +4119,7 @@ async function renderResources(section = 'all') {
   }
 
   container.innerHTML = list.map(r => `
-    <div class="quiz-item fade-in" onclick="window.open('${r.file_url}', '_blank')">
+    <div class="quiz-item fade-in" onclick="trackResourceView('${r.id}'); window.open('${r.file_url}', '_blank')">
       <div style="display:flex;align-items:center;gap:16px">
         <div style="width:40px;height:40px;background:var(--accent-light);color:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">
           ${(r.file_type||'').includes('pdf') ? '📄' : '🖼️'}
@@ -3888,10 +4176,11 @@ async function renderAdminResources() {
           ${r.section ? `<span class="badge sec-${(r.section||'gs').toLowerCase()}" style="font-size:11px;padding:2px 8px">${r.section}</span>` : ''}
           <span class="cat-chip cat-${(r.category||'upsc').toLowerCase()}">${r.category||'—'}</span>
           <span class="meta-tag">${new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>
+          <span class="view-count-badge">${eyeIcon(11)} ${getResourceViews(r.id)} view${getResourceViews(r.id)!==1?'s':''}</span>
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
-        <button class="btn btn-outline btn-sm" onclick="window.open('${r.file_url}','_blank')">👁 View</button>
+        <button class="btn btn-outline btn-sm" onclick="trackResourceView('${r.id}');window.open('${r.file_url}','_blank')">👁 View</button>
         <button class="btn btn-danger btn-sm" onclick="deleteResource('${r.id}', '${r.file_url}')">Delete</button>
       </div>
     </div>
@@ -3950,11 +4239,394 @@ async function uploadAdminResource() {
   if (dbErr) { toast('DB save failed: '+dbErr.message,'error'); return; }
   
   toast('✅ Resource uploaded to '+section+' section!','success');
+  // 🔔 Notify
+  addNotification({ type: 'resource', title, subtitle: `${section} · ${category} · ${fileExt.toUpperCase()}`, id: 'res_' + Date.now() });
   
   // 4. Clear the form
   document.getElementById('resTitle').value = '';
   document.getElementById('resFile').value = '';
   await renderAdminResources();
+}
+
+// ════════════════════════════════════════════════════════════
+//  👁  UNIQUE VIEW COUNT SYSTEM
+//  Storage: localStorage key "cp_views"
+//  Schema : { quizzes: { [quizId]: [userId, ...] },
+//             resources: { [resId]:  [userId, ...] } }
+//  "Unique" = one count per user per item, per device.
+// ════════════════════════════════════════════════════════════
+
+const VIEWS_KEY = 'cp_views';
+
+function _getViews() {
+  try {
+    const raw = localStorage.getItem(VIEWS_KEY);
+    const v   = raw ? JSON.parse(raw) : {};
+    if (!v.quizzes)   v.quizzes   = {};
+    if (!v.resources) v.resources = {};
+    return v;
+  } catch(e) { return { quizzes:{}, resources:{} }; }
+}
+function _saveViews(v) {
+  try { localStorage.setItem(VIEWS_KEY, JSON.stringify(v)); } catch(e) {}
+}
+
+/** Call when a student opens a quiz (before startQuiz). */
+function trackQuizView(quizId) {
+  if (!state.user?.id) return;
+  const v = _getViews();
+  if (!v.quizzes[quizId]) v.quizzes[quizId] = [];
+  if (!v.quizzes[quizId].includes(state.user.id)) {
+    v.quizzes[quizId].push(state.user.id);
+    _saveViews(v);
+  }
+}
+
+/** Call when a student opens/views a resource. */
+function trackResourceView(resId) {
+  if (!state.user?.id) return;
+  const v = _getViews();
+  if (!v.resources[resId]) v.resources[resId] = [];
+  if (!v.resources[resId].includes(state.user.id)) {
+    v.resources[resId].push(state.user.id);
+    _saveViews(v);
+  }
+}
+
+/** Returns unique view count for a quiz. */
+function getQuizViews(quizId) {
+  return (_getViews().quizzes[quizId] || []).length;
+}
+
+/** Returns unique view count for a resource. */
+function getResourceViews(resId) {
+  return (_getViews().resources[resId] || []).length;
+}
+
+/** Returns total unique views across all quizzes. */
+function getTotalQuizViews() {
+  const v = _getViews();
+  return Object.values(v.quizzes).reduce((s, arr) => s + arr.length, 0);
+}
+
+/** Returns total unique views across all resources. */
+function getTotalResourceViews() {
+  const v = _getViews();
+  return Object.values(v.resources).reduce((s, arr) => s + arr.length, 0);
+}
+
+/** SVG eye icon helper (inline, tiny). */
+function eyeIcon(size = 12) {
+  return `<svg width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  🔔 NOTIFICATION SYSTEM
+// ════════════════════════════════════════════════════════════
+
+const NOTIF_KEY      = 'cp_notifications';
+const NOTIF_PREF_KEY = 'cp_notif_prefs';
+const NOTIF_SEEN_KEY = 'cp_notif_seen'; // highest seen timestamp
+
+// ── Storage helpers ──────────────────────────────────────
+function getNotifs() {
+  try { return JSON.parse(localStorage.getItem(NOTIF_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+function saveNotifs(arr) {
+  // Keep last 60 notifications
+  localStorage.setItem(NOTIF_KEY, JSON.stringify(arr.slice(0, 60)));
+}
+function getNotifPrefs() {
+  try { return JSON.parse(localStorage.getItem(NOTIF_PREF_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveNotifPrefs() {
+  const prefs = {
+    inApp: document.getElementById('notifPrefInApp')?.checked !== false
+  };
+  localStorage.setItem(NOTIF_PREF_KEY, JSON.stringify(prefs));
+}
+
+// ── Add a notification ───────────────────────────────────
+function addNotification({ type, title, subtitle, id }) {
+  // type: 'quiz' | 'resource'
+  const notifs = getNotifs();
+  // De-duplicate by source id
+  if (notifs.find(n => n.sourceId === id)) return;
+
+  const n = {
+    id:       'notif_' + Date.now() + '_' + Math.random().toString(36).slice(2,5),
+    sourceId: id,
+    type,
+    title,
+    subtitle:  subtitle || '',
+    createdAt: new Date().toISOString(),
+    read:      false
+  };
+  notifs.unshift(n);
+  saveNotifs(notifs);
+  renderNotifList();
+  updateNotifBadge();
+  ringBell();
+
+  // In-app toast
+  const prefs = getNotifPrefs();
+  if (prefs.inApp !== false) {
+    const icon = type === 'quiz' ? '📝' : '📄';
+    toast(`${icon} New ${type === 'quiz' ? 'Quiz' : 'Resource'}: ${title}`, 'success');
+  }
+
+  // Push notification (if granted)
+  if (Notification.permission === 'granted') {
+    const icon = type === 'quiz' ? '📝' : '📄';
+    try {
+      new Notification(`${icon} New ${type === 'quiz' ? 'Quiz Added' : 'Resource Added'}`, {
+        body:    title + (subtitle ? '\n' + subtitle : ''),
+        icon:    'https://api.dicebear.com/7.x/initials/svg?seed=CP&backgroundColor=113f2b&textColor=ffffff',
+        tag:     n.id,
+        silent:  false
+      });
+    } catch(e) { /* push blocked in some envs */ }
+  }
+}
+
+// ── Render the notification list ─────────────────────────
+function renderNotifList() {
+  const notifs = getNotifs();
+  const el = document.getElementById('notifList');
+  if (!el) return;
+
+  if (!notifs.length) {
+    el.innerHTML = `<div class="notif-empty">
+      <div class="notif-empty-icon">🔔</div>
+      <div>No notifications yet</div>
+      <div style="font-size:11px;margin-top:4px">New quizzes &amp; resources will appear here</div>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = notifs.map(n => {
+    const isQuiz = n.type === 'quiz';
+    const icon   = isQuiz ? '📝' : '📄';
+    const bgCls  = isQuiz ? 'quiz' : 'resource';
+    const ts     = formatNotifTime(n.createdAt);
+    return `
+    <div class="notif-item ${n.read ? '' : 'unread'}" onclick="notifItemClick('${n.id}','${n.sourceId}','${n.type}')">
+      <div class="notif-item-icon ${bgCls}">${icon}</div>
+      <div class="notif-item-body">
+        <div class="notif-item-title">${escHtml(n.title)}</div>
+        ${n.subtitle ? `<div class="notif-item-sub">${escHtml(n.subtitle)}</div>` : ''}
+        <div class="notif-item-time">${ts}</div>
+      </div>
+      <div class="notif-dot ${n.read ? 'hidden' : ''}"></div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatNotifTime(iso) {
+  if (!iso) return '';
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1)  return 'Just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return `${d}d ago`;
+}
+
+// ── Badge count ──────────────────────────────────────────
+function updateNotifBadge() {
+  const unread = getNotifs().filter(n => !n.read).length;
+  const badge  = document.getElementById('notifBadge');
+  if (!badge) return;
+  if (unread > 0) {
+    badge.textContent = unread > 9 ? '9+' : unread;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function ringBell() {
+  const btn = document.getElementById('notifBellBtn');
+  if (!btn) return;
+  btn.classList.add('ringing');
+  setTimeout(() => btn.classList.remove('ringing'), 700);
+}
+
+// ── Panel toggle ──────────────────────────────────────────
+function toggleNotifPanel() {
+  const panel = document.getElementById('notifPanel');
+  if (!panel) return;
+  const isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+  } else {
+    panel.classList.add('open');
+    renderNotifList();
+    updatePushPermissionUI();
+  }
+}
+
+// Close panel when clicking outside
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('notifBellWrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('notifPanel')?.classList.remove('open');
+  }
+});
+
+// ── Mark read / clear ────────────────────────────────────
+function markAllNotifRead() {
+  const notifs = getNotifs().map(n => ({ ...n, read: true }));
+  saveNotifs(notifs);
+  renderNotifList();
+  updateNotifBadge();
+}
+function clearAllNotifs() {
+  saveNotifs([]);
+  renderNotifList();
+  updateNotifBadge();
+}
+function notifItemClick(nid, sourceId, type) {
+  // Mark as read
+  const notifs = getNotifs().map(n => n.id === nid ? { ...n, read: true } : n);
+  saveNotifs(notifs);
+  updateNotifBadge();
+  renderNotifList();
+  // Navigate to the relevant page
+  document.getElementById('notifPanel')?.classList.remove('open');
+  if (type === 'quiz') {
+    if (state.user?.role === 'admin') { showPage('admin'); adminTab('quizzes'); }
+    else { showPage('student'); renderStudentHome(); }
+  } else {
+    if (state.user?.role === 'admin') { showPage('admin'); adminTab('resources'); }
+    else { showPage('resources'); renderResources(); }
+  }
+}
+
+// ── Push Notification permission ────────────────────────
+function updatePushPermissionUI() {
+  const row = document.getElementById('notifSubRow');
+  const btn = document.getElementById('notifSubBtn');
+  if (!row || !btn) return;
+
+  if (!('Notification' in window)) { row.style.display = 'none'; return; }
+
+  const perm = Notification.permission;
+  if (perm === 'granted') {
+    btn.textContent = '✅ Enabled';
+    btn.className   = 'notif-sub-btn granted';
+    btn.onclick     = null;
+    row.style.display = 'flex';
+  } else if (perm === 'denied') {
+    btn.textContent = '🚫 Blocked';
+    btn.className   = 'notif-sub-btn denied';
+    btn.onclick     = null;
+    row.style.display = 'flex';
+  } else {
+    // default — not yet asked
+    btn.textContent = 'Enable';
+    btn.className   = 'notif-sub-btn';
+    btn.onclick     = requestPushPermission;
+    row.style.display = 'flex';
+  }
+}
+
+async function requestPushPermission() {
+  if (!('Notification' in window)) {
+    toast('Push notifications are not supported by your browser', 'error'); return;
+  }
+  const result = await Notification.requestPermission();
+  updatePushPermissionUI();
+  if (result === 'granted') {
+    toast('🔔 Push notifications enabled!', 'success');
+    // Send a test notification
+    new Notification('🎉 Notifications Active!', {
+      body: 'You\'ll now get alerts when new quizzes & resources are added.',
+      icon: 'https://api.dicebear.com/7.x/initials/svg?seed=CP&backgroundColor=113f2b&textColor=ffffff'
+    });
+  } else {
+    toast('Notifications blocked — you can change this in browser settings', 'error');
+  }
+}
+
+// ── Supabase Realtime subscriptions ─────────────────────
+let _notifChannels = [];
+
+function startRealtimeNotifications() {
+  // Unsubscribe any existing channels
+  _notifChannels.forEach(ch => { try { ch.unsubscribe(); } catch(e) {} });
+  _notifChannels = [];
+
+  // 1. New quizzes
+  const quizCh = sb
+    .channel('notif-quizzes')
+    .on('postgres_changes', {
+        event:  'INSERT',
+        schema: 'public',
+        table:  'quizzes'
+      }, payload => {
+        const q = payload.new;
+        // Only notify students about active quizzes; admins get all
+        if (!q || (!q.active && state.user?.role !== 'admin')) return;
+        addNotification({
+          type:     'quiz',
+          title:    q.title || 'New Quiz',
+          subtitle: `${q.category || ''}${q.section ? ' · ' + q.section : ''} · ${q.time_limit || 0} min`,
+          id:       q.id
+        });
+      })
+    .subscribe(status => {
+        const el = document.getElementById('notifRealtimeStatus');
+        if (el) {
+          el.textContent = status === 'SUBSCRIBED' ? '● Live' : '○ Connecting…';
+          el.style.color = status === 'SUBSCRIBED' ? '#27ae60' : 'var(--text-muted)';
+        }
+      });
+
+  // 2. New resources
+  const resCh = sb
+    .channel('notif-resources')
+    .on('postgres_changes', {
+        event:  'INSERT',
+        schema: 'public',
+        table:  'resources'
+      }, payload => {
+        const r = payload.new;
+        if (!r) return;
+        addNotification({
+          type:     'resource',
+          title:    r.title || 'New Resource',
+          subtitle: `${r.section || ''}${r.category ? ' · ' + r.category : ''} · ${(r.file_type || '').toUpperCase()}`,
+          id:       r.id
+        });
+      })
+    .subscribe();
+
+  _notifChannels = [quizCh, resCh];
+}
+
+// ── Notify on admin-side publishes too (local events) ───
+// Patched into saveQuiz and uploadAdminResource below.
+
+// ── Init on boot ─────────────────────────────────────────
+function initNotifications() {
+  // Restore prefs
+  const prefs = getNotifPrefs();
+  const inAppEl = document.getElementById('notifPrefInApp');
+  if (inAppEl) inAppEl.checked = prefs.inApp !== false;
+
+  updateNotifBadge();
+  renderNotifList();
+  updatePushPermissionUI();
+  startRealtimeNotifications();
 }
 
 // ════════════════════════════════════════════════════════════
@@ -4318,6 +4990,8 @@ async function publishAiQuiz() {
 
   if (ok) {
     toast('Quiz published successfully! ✅', 'success');
+    // 🔔 Notify
+    addNotification({ type: 'quiz', title, subtitle: `${category} · ${section} · ${timeLimit} min`, id: quiz.id });
     resetAiGenerator();
     await adminTab('quizzes');
   } else {
