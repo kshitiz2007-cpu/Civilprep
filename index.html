@@ -2734,6 +2734,8 @@ async function renderAdminOverview() {
   ]);
   state.quizzes  = quizzes;
   state.attempts = attempts;
+  await fetchResources();
+  await _loadViewsCache(true);   // 👁 fresh view counts
   hideLoader();
 
   const students = profiles.filter(u => u.role !== 'admin');
@@ -2751,16 +2753,15 @@ async function renderAdminOverview() {
     <div class="stat-card"><div class="stat-value" style="color:var(--saffron)">${pending}</div><div class="stat-label">Pending Payments <span style="font-size:12px;cursor:pointer" onclick="adminTab('payments')">→ View</span></div></div>`;
 
   // ── Top Viewed Quizzes panel ────────────────────────────
-  const viewData = _getViews();
   const topQuizzes = quizzes
-    .map(q => ({ ...q, views: (viewData.quizzes[q.id] || []).length }))
+    .map(q => ({ ...q, views: getQuizViews(q.id) }))
     .filter(q => q.views > 0)
     .sort((a, b) => b.views - a.views)
     .slice(0, 6);
   const maxQViews = topQuizzes.length ? topQuizzes[0].views : 1;
 
   const topResources = allResources
-    .map(r => ({ ...r, views: (viewData.resources[r.id] || []).length }))
+    .map(r => ({ ...r, views: getResourceViews(r.id) }))
     .filter(r => r.views > 0)
     .sort((a, b) => b.views - a.views)
     .slice(0, 6);
@@ -2837,6 +2838,7 @@ async function renderAdminQuizzes() {
   const [quizzes, attempts] = await Promise.all([DB.getQuizzes(), DB.getAttempts()]);
   state.quizzes  = quizzes;
   state.attempts = attempts;
+  await _loadViewsCache();   // 👁 load view counts
   hideLoader();
 
   const currentSection = window._adminQuizSection || 'all';
@@ -4155,6 +4157,7 @@ function filterResourceSection(section) {
 
 async function renderAdminResources() {
   await fetchResources();
+  await _loadViewsCache();   // 👁 load view counts
   const container = document.getElementById('adminResourceList');
 
   // Build section filter tabs for admin resources
@@ -4249,73 +4252,113 @@ async function uploadAdminResource() {
 }
 
 // ════════════════════════════════════════════════════════════
-//  👁  UNIQUE VIEW COUNT SYSTEM
-//  Storage: localStorage key "cp_views"
-//  Schema : { quizzes: { [quizId]: [userId, ...] },
-//             resources: { [resId]:  [userId, ...] } }
-//  "Unique" = one count per user per item, per device.
+//  👁  UNIQUE VIEW COUNT SYSTEM  — Supabase-backed
+//
+//  Supabase table required (run once in SQL editor):
+//
+//  create table if not exists views (
+//    id          text primary key,   -- "{type}_{contentId}_{userId}"
+//    content_id  text not null,
+//    content_type text not null,     -- 'quiz' | 'resource'
+//    user_id     text not null,
+//    viewed_at   timestamptz default now()
+//  );
+//  create index if not exists views_content_idx on views(content_id, content_type);
+//
+//  "Unique" = one row per (user × content item).
+//  Uses upsert so repeated calls are safe & cheap.
 // ════════════════════════════════════════════════════════════
 
-const VIEWS_KEY = 'cp_views';
+// ════════════════════════════════════════════════════════════
+//  👁  VIEW COUNT SYSTEM  — uses existing DB, no new tables
+//
+//  Quiz views  → counted from existing `attempts` table
+//                (unique users who attempted = unique viewers)
+//  Resource views → localStorage per device (instant, no schema needed)
+//                   Key: cp_rv  Value: { resId: count }
+// ════════════════════════════════════════════════════════════
 
-function _getViews() {
+let _viewsCache    = null;
+let _viewsCacheTs  = 0;
+const VIEWS_CACHE_TTL = 20000;
+
+// ── Quiz views: derive from attempts table ────────────────
+async function _loadViewsCache(force = false) {
+  const now = Date.now();
+  if (!force && _viewsCache && (now - _viewsCacheTs) < VIEWS_CACHE_TTL) return _viewsCache;
+
+  const cache = { quiz: {}, resource: {} };
+
   try {
-    const raw = localStorage.getItem(VIEWS_KEY);
-    const v   = raw ? JSON.parse(raw) : {};
-    if (!v.quizzes)   v.quizzes   = {};
-    if (!v.resources) v.resources = {};
-    return v;
-  } catch(e) { return { quizzes:{}, resources:{} }; }
-}
-function _saveViews(v) {
-  try { localStorage.setItem(VIEWS_KEY, JSON.stringify(v)); } catch(e) {}
+    // Count unique (quiz_id, user_id) pairs from existing attempts table
+    const { data, error } = await sb
+      .from('attempts')
+      .select('quiz_id, user_id');
+    if (!error && data) {
+      data.forEach(row => {
+        if (!cache.quiz[row.quiz_id]) cache.quiz[row.quiz_id] = new Set();
+        cache.quiz[row.quiz_id].add(row.user_id);
+      });
+      // Convert Sets to counts
+      Object.keys(cache.quiz).forEach(k => {
+        cache.quiz[k] = cache.quiz[k].size;
+      });
+    }
+  } catch(e) { /* silent */ }
+
+  // Resource views from localStorage
+  try {
+    const rv = JSON.parse(localStorage.getItem('cp_rv') || '{}');
+    Object.entries(rv).forEach(([id, c]) => { cache.resource[id] = c; });
+  } catch(e) { /* silent */ }
+
+  _viewsCache   = cache;
+  _viewsCacheTs = now;
+  return cache;
 }
 
-/** Call when a student opens a quiz (before startQuiz). */
-function trackQuizView(quizId) {
-  if (!state.user?.id) return;
-  const v = _getViews();
-  if (!v.quizzes[quizId]) v.quizzes[quizId] = [];
-  if (!v.quizzes[quizId].includes(state.user.id)) {
-    v.quizzes[quizId].push(state.user.id);
-    _saveViews(v);
-  }
-}
-
-/** Call when a student opens/views a resource. */
+// ── Resource view tracking ────────────────────────────────
 function trackResourceView(resId) {
-  if (!state.user?.id) return;
-  const v = _getViews();
-  if (!v.resources[resId]) v.resources[resId] = [];
-  if (!v.resources[resId].includes(state.user.id)) {
-    v.resources[resId].push(state.user.id);
-    _saveViews(v);
-  }
+  if (!resId) return;
+  try {
+    const rv = JSON.parse(localStorage.getItem('cp_rv') || '{}');
+    rv[resId] = (rv[resId] || 0) + 1;
+    localStorage.setItem('cp_rv', JSON.stringify(rv));
+    // Update live cache immediately so admin sees it right away
+    if (_viewsCache) _viewsCache.resource[resId] = rv[resId];
+  } catch(e) { /* silent */ }
 }
 
-/** Returns unique view count for a quiz. */
+// ── Quiz view tracking ────────────────────────────────────
+function trackQuizView(quizId) {
+  // Quiz views come from attempts — nothing extra to write.
+  // Bust cache so next admin render re-counts from attempts.
+  _viewsCache = null;
+}
+
+// ── Getters ───────────────────────────────────────────────
 function getQuizViews(quizId) {
-  return (_getViews().quizzes[quizId] || []).length;
+  return (_viewsCache?.quiz?.[quizId]) || 0;
 }
-
-/** Returns unique view count for a resource. */
 function getResourceViews(resId) {
-  return (_getViews().resources[resId] || []).length;
+  // Always read live from localStorage for instant accuracy
+  try {
+    const rv = JSON.parse(localStorage.getItem('cp_rv') || '{}');
+    return rv[resId] || 0;
+  } catch(e) { return 0; }
 }
-
-/** Returns total unique views across all quizzes. */
 function getTotalQuizViews() {
-  const v = _getViews();
-  return Object.values(v.quizzes).reduce((s, arr) => s + arr.length, 0);
+  if (!_viewsCache) return 0;
+  return Object.values(_viewsCache.quiz || {}).reduce((s, v) => s + v, 0);
 }
-
-/** Returns total unique views across all resources. */
 function getTotalResourceViews() {
-  const v = _getViews();
-  return Object.values(v.resources).reduce((s, arr) => s + arr.length, 0);
+  try {
+    const rv = JSON.parse(localStorage.getItem('cp_rv') || '{}');
+    return Object.values(rv).reduce((s, v) => s + v, 0);
+  } catch(e) { return 0; }
 }
 
-/** SVG eye icon helper (inline, tiny). */
+/** SVG eye icon helper */
 function eyeIcon(size = 12) {
   return `<svg width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
 }
